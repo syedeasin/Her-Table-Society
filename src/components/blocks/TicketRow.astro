@@ -1,0 +1,27 @@
+---
+/** Figma "Ticket Row" (account tickets). */
+import type { HtsEvent } from '../../data/site';
+import { calendarLinks } from '../../lib/events';
+import Photo from '../ui/Photo.astro';
+import Badge from '../ui/Badge.astro';
+interface Props { event: HtsEvent; meta: string; past?: boolean }
+const { event: e, meta, past = false } = Astro.props;
+const cal = calendarLinks(e);
+---
+<li class="flex flex-col gap-3.5 border border-line bg-cream px-4 py-5 md:flex-row md:items-center md:gap-6 md:p-5">
+  <div class="flex flex-1 items-center gap-3.5 md:gap-6">
+    <div class="size-[72px] shrink-0 overflow-hidden rounded-xs bg-sand md:size-24"><Photo src={e.image} alt="" sizes="96px" widths={[192]} /></div>
+    <div class="flex flex-col gap-1">
+      <p class="font-sans text-[14px] leading-5 tracking-[0.08em] uppercase text-muted">{e.dateShort}</p>
+      <p class="font-serif text-[24px] leading-[1.1] tracking-[-0.02em] text-ink md:text-[28px]">{e.title}</p>
+      <p class="font-sans text-[14px] leading-5 text-muted">{meta}</p>
+    </div>
+  </div>
+  <div class="flex flex-col gap-3 md:items-end md:gap-2.5">
+    {!past && <Badge status="confirmed" />}
+    <div class="flex gap-4">
+      {!past && cal && <a href={cal.apple} class="t-link text-ink" download>Add to calendar</a>}
+      <a href={`/events/${e.slug}`} class="t-link text-ink">View ticket</a>
+    </div>
+  </div>
+</li>

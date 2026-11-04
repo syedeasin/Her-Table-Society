@@ -1,0 +1,28 @@
+---
+/** Figma "Option Card / V2" (Explore Events / Become a Member). */
+import type { ImageKey } from '../../data/images';
+import Photo from '../ui/Photo.astro';
+import Button from '../ui/Button.astro';
+import Perforation from '../ui/Perforation.astro';
+interface Props { eyebrow: string; title: string; body: string; note?: string; meta: string; cta: { label: string; href: string }; image: ImageKey }
+const { eyebrow, title, body, note, meta, cta, image } = Astro.props;
+---
+<article class="flex flex-col bg-cream">
+  <div class="aspect-[35/24] overflow-hidden md:aspect-[8/5]"><Photo src={image} alt="" sizes="(min-width: 768px) 50vw, 100vw" widths={[400, 700, 1152]} /></div>
+  <div class="flex flex-1 flex-col gap-5 px-5 py-6 md:gap-6 md:p-10">
+    <div class="flex flex-col gap-3">
+      <div class="flex flex-col gap-1.5">
+        <p class="t-eyebrow">{eyebrow}</p>
+        <h3 class="font-serif text-[36px] leading-none tracking-[-0.03em] text-ink md:text-[48px]">{title}</h3>
+      </div>
+      <p class="font-sans text-[18px] leading-[1.6] text-ink">{body}</p>
+      {note && <p class="font-sans text-[14px] leading-5 text-muted">{note}</p>}
+    </div>
+    <Perforation class="mt-auto" />
+    <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <p class="font-sans text-[14px] leading-5 text-muted">{meta}</p>
+      <Button href={cta.href} size="lg" class="max-md:hidden">{cta.label}</Button>
+      <Button href={cta.href} size="sm" full class="md:hidden">{cta.label}</Button>
+    </div>
+  </div>
+</article>

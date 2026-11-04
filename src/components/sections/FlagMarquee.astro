@@ -1,0 +1,15 @@
+---
+/** Figma 01 · Quote marquee (TABLE 01 prompts). Pauses on hover; static for reduced motion. */
+import { table01 } from '../../data/site';
+import Mixed from '../ui/Mixed.astro';
+const quotes = table01.quotes;
+---
+<div class="overflow-hidden border-y border-silver py-6" aria-label="Red flag or green flag prompts">
+  <div class="animate-marquee flex w-max gap-12 hover:[animation-play-state:paused]">
+    {[0, 1].map((dup) => (
+      <ul class="flex shrink-0 gap-12" aria-hidden={dup === 1 ? 'true' : undefined}>
+        {quotes.map((q) => <li class="font-serif text-[20px] leading-[1.2] whitespace-nowrap text-ink md:text-[24px]"><Mixed text={q} /></li>)}
+      </ul>
+    ))}
+  </div>
+</div>

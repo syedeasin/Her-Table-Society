@@ -1,0 +1,46 @@
+---
+/**
+ * Figma "Plan Card" (Intro / 6 months / 12 months × Default / Selected).
+ * With `name`, it renders as a selectable radio card (label + hidden radio); otherwise a static card.
+ */
+import type { Plan } from '../../data/site';
+import { membership } from '../../data/site';
+import Perforation from '../ui/Perforation.astro';
+interface Props { plan: Plan; selected?: boolean; name?: string; class?: string; compact?: boolean }
+const { plan, selected = false, name, class: cls, compact = false } = Astro.props;
+const Tag = name ? 'label' : 'div';
+const id = name ? `${name}-${plan.id}` : undefined;
+---
+<Tag
+  for={id}
+  class:list={[
+    'group relative flex flex-col gap-6 border bg-cream p-6 transition-colors md:p-8',
+    selected ? 'border-ink' : 'border-line',
+    name && 'cursor-pointer hover:border-muted has-checked:border-ink has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-ink',
+    cls,
+  ]}
+  data-plan={plan.id}
+>
+  {name && <input type="radio" id={id} name={name} value={plan.id} checked={selected} class="sr-only" data-price={plan.price} data-months={plan.months} data-renews={String(plan.renews)} />}
+  <div class="flex items-start justify-between gap-4">
+    <p class:list={['max-w-[230px] font-sans text-[14px] leading-[1.4] tracking-[0.08em] uppercase', plan.id === 'intro' ? 'text-red' : 'text-muted']}>{plan.tag}</p>
+    <span class="shrink-0" aria-hidden="true">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class:list={[name ? 'group-has-checked:hidden' : selected && 'hidden']}><circle cx="10" cy="10" r="9.5" stroke="#5C5A55" /></svg>
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class:list={[name ? 'hidden group-has-checked:block' : !selected && 'hidden']}><circle cx="10" cy="10" r="9.25" stroke="#1B1A18" /><circle cx="10" cy="10" r="5" fill="#1B1A18" /></svg>
+    </span>
+  </div>
+  <div class="flex flex-col gap-1">
+    <p class="text-ink"><span class="font-sans text-[26px] font-medium leading-none">{plan.months}</span> <span class="font-serif text-[32px] leading-none tracking-[-0.03em]">Months</span></p>
+    <p class="font-sans text-[52px] font-medium leading-none tracking-[-0.03em] text-ink md:text-[60px]">${plan.price}</p>
+    <p class="mt-1 font-sans text-[14px] leading-5 text-muted">$50/mo equivalent</p>
+    <p class="font-sans text-[14px] leading-5 text-muted">{membership.planTicketsNote}</p>
+  </div>
+  {!compact && (
+    <>
+      <Perforation />
+      <ul class="flex flex-col gap-2.5 font-sans text-[16px] leading-[1.6] text-muted">
+        {plan.terms.map((t) => <li class="flex gap-3"><span aria-hidden="true">—</span><span>{t}</span></li>)}
+      </ul>
+    </>
+  )}
+</Tag>

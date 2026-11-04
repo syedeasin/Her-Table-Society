@@ -1,0 +1,40 @@
+---
+/**
+ * Figma components: Button/Primary (LG, Sm), Button/Link (Lg, Sm), Button/Nav.
+ * Primary: ink fill, sand label, dashed divider and caret cell. Link: sand fill, ink label.
+ * Renders <a> when href is set, otherwise <button>.
+ */
+import Icon from './Icon.astro';
+interface Props {
+  variant?: 'primary' | 'link' | 'nav';
+  size?: 'lg' | 'sm';
+  href?: string;
+  type?: 'button' | 'submit' | 'reset';
+  full?: boolean;
+  disabled?: boolean;
+  class?: string;
+  [key: string]: unknown;
+}
+const { variant = 'primary', size = 'lg', href, type = 'button', full = false, disabled = false, class: cls = '', ...rest } = Astro.props;
+const Tag = href && !disabled ? 'a' : 'button';
+const base = 't-button inline-flex items-stretch rounded-xs transition-colors duration-200 select-none';
+const width = full ? 'w-full' : 'w-max max-w-full';
+const variants = {
+  primary: 'bg-ink text-sand hover:bg-[#2e2d2d] disabled:opacity-60',
+  link: 'bg-sand text-ink hover:bg-line justify-center items-center',
+  nav: 'bg-ink text-cream hover:bg-[#2e2d2d] items-center px-5 py-4',
+};
+const disabledCls = disabled ? 'pointer-events-none cursor-not-allowed' : '';
+const linkPad = size === 'lg' ? 'px-6 py-5' : 'px-5 py-4';
+const textPad = size === 'lg' ? 'px-6 py-5' : 'px-6 py-4';
+const iconPad = size === 'lg' ? 'p-5' : 'p-4';
+const attrs = Tag === 'a' ? { href } : { type, disabled };
+---
+<Tag class:list={[base, width, variants[variant], variant === 'link' && linkPad, variant === 'link' && 'text-center', disabledCls, cls]} {...attrs} {...rest}>
+  {variant === 'primary' ? (
+    <>
+      <span class:list={[textPad, 'flex flex-1 items-center justify-center text-center border-r border-dashed border-muted']}><slot /></span>
+      <span class:list={[iconPad, 'flex items-center justify-center']}><Icon name="caret" /></span>
+    </>
+  ) : <slot />}
+</Tag>

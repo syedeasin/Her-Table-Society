@@ -1,0 +1,18 @@
+---
+/**
+ * Figma pattern: values set in Cormorant with every number in Jost Medium (~84% size).
+ * <Mixed text="May 22, 2027 · $300" />
+ */
+interface Props { text: string }
+const { text } = Astro.props;
+const re = /\$?\d+(?:[.,:/]\d+)*\+?/g;
+const parts: { t: string; n: boolean }[] = [];
+let last = 0;
+for (const m of text.matchAll(re)) {
+  if (m.index! > last) parts.push({ t: text.slice(last, m.index), n: false });
+  parts.push({ t: m[0], n: true });
+  last = m.index! + m[0].length;
+}
+if (last < text.length) parts.push({ t: text.slice(last), n: false });
+---
+{parts.map((p) => (p.n ? <span class="num">{p.t}</span> : p.t))}

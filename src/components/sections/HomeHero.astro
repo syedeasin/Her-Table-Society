@@ -1,0 +1,59 @@
+---
+/**
+ * Figma 01 · Hero. Collage authored in Figma px and scaled with container-query units (cqw):
+ * desktop box = 1200 × 848 content (≥1024), mobile box = 390 × 621 (<1024, capped at 640 wide on tablets).
+ */
+import { home } from '../../data/site';
+import Photo from '../ui/Photo.astro';
+import Button from '../ui/Button.astro';
+const h = home.hero;
+---
+<section aria-labelledby="hero-title" class="overflow-hidden">
+  <h1 id="hero-title" class="sr-only">{h.titleTop} {h.titleBottom}</h1>
+
+  <!-- Desktop / laptop -->
+  <div class="mx-auto hidden max-w-[var(--container)] px-[var(--gutter)] lg:block">
+    <div class="cq relative aspect-[1200/848]">
+      <p class="absolute top-[4.667cqw] left-0 t-eyebrow text-ink"><span>{h.eyebrow[0]}</span> <span class="font-medium">{h.eyebrow[1]}</span></p>
+      <p aria-hidden="true" class="absolute top-[6.667cqw] left-0 z-20 font-serif text-[13.333cqw] font-semibold italic leading-[0.9] tracking-[-0.03em] whitespace-nowrap text-ink">{h.titleTop}</p>
+      <div class="absolute top-[15.333cqw] left-[34cqw] h-[46.667cqw] w-[58.333cqw] overflow-hidden rounded-sm">
+        <Photo src="heroMain" alt="Three women in neutral linen walking together in the sun" sizes="58vw" loading="eager" fetchpriority="high" />
+      </div>
+      <div class="absolute top-[6.833cqw] right-0 z-10 aspect-square w-[17cqw] overflow-hidden rounded-full border-[3px] border-cream shadow-logo">
+        <Photo src="logo" alt="Her Table Society" sizes="204px" widths={[204, 408]} loading="eager" />
+      </div>
+      <div class="absolute top-[24.667cqw] left-0 flex w-[30cqw] flex-col gap-[2cqw]">
+        <div class="aspect-[204/164] w-[17cqw] overflow-hidden rounded-sm"><Photo src="heroSmall" alt="" sizes="204px" widths={[204, 408]} loading="eager" /></div>
+        <p class="text-justify font-sans text-[clamp(15px,1.5cqw,18px)] leading-[1.6] text-ink"><span class="font-medium uppercase">{h.leadName}</span> {h.lead}</p>
+        <div class="flex flex-col gap-4">
+          <Button href={h.primary.href} full>{h.primary.label}</Button>
+          <Button href={h.secondary.href} variant="link" full>{h.secondary.label}</Button>
+        </div>
+      </div>
+      <p aria-hidden="true" class="absolute top-[58.667cqw] right-0 z-20 font-serif text-[13.333cqw] font-semibold italic leading-[0.9] tracking-[-0.03em] whitespace-nowrap text-ink">{h.titleBottom}</p>
+    </div>
+  </div>
+
+  <!-- Mobile / tablet -->
+  <div class="mx-auto max-w-[640px] lg:hidden">
+    <div class="cq relative aspect-[390/621]">
+      <p class="absolute top-[12.308cqw] left-[5.128cqw] t-eyebrow text-ink"><span>{h.eyebrow[0]}</span> <span class="font-medium">{h.eyebrow[1]}</span></p>
+      <p aria-hidden="true" class="absolute top-[17.5cqw] left-[5.128cqw] z-20 font-serif text-[16.41cqw] font-semibold italic leading-[0.9] tracking-[-0.03em] whitespace-nowrap text-ink">{h.titleTop}</p>
+      <p aria-hidden="true" class="absolute top-[35.385cqw] left-[5.128cqw] z-20 font-serif text-[16.41cqw] font-semibold italic leading-[0.9] tracking-[-0.03em] whitespace-nowrap text-ink">{h.titleBottom}</p>
+      <div class="absolute top-[58.462cqw] left-[5.128cqw] h-[26.923cqw] w-[41.026cqw] overflow-hidden rounded-sm"><Photo src="heroSmall" alt="" sizes="160px" widths={[320]} loading="eager" /></div>
+      <div class="absolute top-[89.487cqw] left-0 h-[69.744cqw] w-full overflow-hidden rounded-sm">
+        <Photo src="heroMain" alt="Three women in neutral linen walking together in the sun" sizes="(max-width: 640px) 100vw, 640px" widths={[400, 800, 1280]} loading="eager" fetchpriority="high" />
+      </div>
+      <div class="absolute top-[74.103cqw] right-[5.128cqw] z-10 aspect-square w-[30.769cqw] overflow-hidden rounded-full border-2 border-cream shadow-[0_1px_2px_rgb(0_0_0/0.1)]">
+        <Photo src="logo" alt="Her Table Society" sizes="120px" widths={[240]} loading="eager" />
+      </div>
+    </div>
+    <div class="flex flex-col gap-7 px-5 pt-8">
+      <p class="font-sans text-[18px] leading-[1.6] text-ink"><span class="font-medium uppercase">{h.leadName}</span> {h.lead}</p>
+      <div class="flex flex-col gap-3">
+        <Button href={h.primary.href} size="sm" full>{h.primary.label}</Button>
+        <Button href={h.secondary.href} variant="link" size="sm" full>{h.secondary.label}</Button>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,210 @@
+---
+/**
+ * Styleguide (Figma 09 · Components). Every token, component and state in one page, for review and reuse.
+ * Not linked from the site and excluded from the sitemap (noindex).
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { events, plans, membership, categories, home, table01, type HtsEvent } from '../data/site';
+import type { BadgeStatus } from '../lib/badges';
+import type { PanelState } from '../lib/events';
+import Button from '../components/ui/Button.astro';
+import Badge from '../components/ui/Badge.astro';
+import Chip from '../components/ui/Chip.astro';
+import Icon from '../components/ui/Icon.astro';
+import type { IconName } from '../lib/icons';
+import Input from '../components/ui/Input.astro';
+import Checkbox from '../components/ui/Checkbox.astro';
+import Alert from '../components/ui/Alert.astro';
+import InfoField from '../components/ui/InfoField.astro';
+import Perforation from '../components/ui/Perforation.astro';
+import EventCard from '../components/blocks/EventCard.astro';
+import TicketPanel from '../components/blocks/TicketPanel.astro';
+import PlanCard from '../components/blocks/PlanCard.astro';
+import FaqItem from '../components/blocks/FaqItem.astro';
+import BenefitRow from '../components/blocks/BenefitRow.astro';
+import KeyFact from '../components/blocks/KeyFact.astro';
+import StepItem from '../components/blocks/StepItem.astro';
+import StepCard from '../components/blocks/StepCard.astro';
+import PillarCard from '../components/blocks/PillarCard.astro';
+import ExperienceCard from '../components/blocks/ExperienceCard.astro';
+import OptionCard from '../components/blocks/OptionCard.astro';
+import FlagCard from '../components/blocks/FlagCard.astro';
+import OrderSummary from '../components/blocks/OrderSummary.astro';
+import MembershipSummary from '../components/blocks/MembershipSummary.astro';
+import JoinStepper from '../components/blocks/JoinStepper.astro';
+import TicketRow from '../components/blocks/TicketRow.astro';
+import AccountNav from '../components/blocks/AccountNav.astro';
+import MembershipCard from '../components/blocks/MembershipCard.astro';
+import PaymentCard from '../components/blocks/PaymentCard.astro';
+import EmptyState from '../components/blocks/EmptyState.astro';
+import ChangeSummary from '../components/blocks/ChangeSummary.astro';
+import NotifyCard from '../components/blocks/NotifyCard.astro';
+import ReviewRow from '../components/blocks/ReviewRow.astro';
+import ChoiceTile from '../components/blocks/ChoiceTile.astro';
+import OrderLine from '../components/blocks/OrderLine.astro';
+import CancellationPolicy from '../components/blocks/CancellationPolicy.astro';
+import MembersFirstNote from '../components/blocks/MembersFirstNote.astro';
+import MemberPrompt from '../components/blocks/MemberPrompt.astro';
+
+const colors = [
+  ['ink', '#1B1A18', 'Text, buttons, dark surfaces'], ['muted', '#5C5A55', 'Secondary text'], ['cream', '#FCF8EF', 'Page background'],
+  ['sand', '#F4EEE1', 'Alternate sections, cards'], ['line', '#E4DCCB', 'Card borders, capacity track'], ['silver', '#C4C4C4', 'Dividers, inputs, chips'],
+  ['red', '#A4161A', 'Flag red, urgency, errors'], ['green', '#2E5E3E', 'Flag green, success'],
+];
+const type = [
+  ['t-display', 'Display · Cormorant SemiBold Italic 160 / 64', 'No two tables'],
+  ['t-h1', 'H1 · Cormorant Italic 96 / 48', 'Upcoming experiences.'],
+  ['t-h1-detail', 'H1 detail · Italic 88 / 48', 'Rooftop Golden Hour'],
+  ['t-h1-xl', 'H1 membership · Italic 104 / 56', 'Become a member.'],
+  ['t-h1-confirm', 'Confirmation · Italic 80 / 48', 'You’re on the list.'],
+  ['t-h2', 'H2 · Italic 64 / 40', 'Always changing. Always curated.'],
+  ['t-h2-flow', 'Flow title · Italic 56 / 40', 'Checkout'],
+  ['t-h3', 'H3 · Regular 48 / 32', 'Explore Events'],
+  ['t-h4', 'Card title · Regular 32 / 28', 'Matcha & Morning Pages'],
+  ['t-h5', 'H5 · Regular 24 / 20', 'The first table. The beginning of many.'],
+  ['t-lead', 'Body lead · Jost 18/1.6', 'Book a single ticket to any HER TABLE experience.'],
+  ['t-body', 'Body · Jost 16/1.6', 'Your tickets and the exact address arrive by email.'],
+  ['t-eyebrow', 'Eyebrow · Jost 14 upper 5%', 'Explore events'],
+  ['t-label', 'Card eyebrow · Jost 14 upper 8%', 'HER TABLE Book Club'],
+  ['t-button', 'Button · Jost 14/16 upper 5%', 'Become a member'],
+];
+const badges: BadgeStatus[] = ['early-access', 'available', 'member-price', 'few-left', 'sold-out', 'members-only', 'date-soon', 'membership-full', 'active', 'confirmed', 'payment-due', 'intro-plan', 'renewal-off', 'launch'];
+const icons: IconName[] = ['caret', 'menu', 'close', 'x', 'instagram', 'facebook', 'flag', 'lock', 'plus', 'minus', 'success', 'radio-on', 'radio-off', 'check-on', 'check-off'];
+const rooftop = events.find((e) => e.slug === 'rooftop-golden-hour')!;
+const demo = (over: Partial<HtsEvent>): HtsEvent => ({ ...rooftop, slug: `demo-${over.access ?? 'x'}-${over.status ?? 'y'}`, ...over });
+const panels: { state: PanelState; event: HtsEvent }[] = [
+  { state: 'public-sale', event: demo({ capacity: 40, seatsLeft: 12, access: 'member-price', status: 'available', price: 45, memberPrice: 35 }) },
+  { state: 'early-access', event: demo({ capacity: 40, seatsLeft: 22, access: 'early-access', publicSaleOpens: 'Fri, Nov 7 at 10 AM PT' }) },
+  { state: 'sold-out', event: demo({ capacity: 40, seatsLeft: 0, status: 'sold-out' }) },
+  { state: 'members-only', event: demo({ capacity: 16, seatsLeft: 6, access: 'members-only' }) },
+  { state: 'date-soon', event: { ...(table01 as HtsEvent), slug: 'demo-date-soon' } },
+  { state: 'pricing-soon', event: demo({ status: 'available', access: 'public' }) },
+];
+const sections = ['Colors', 'Typography', 'Icons', 'Buttons', 'Badges', 'Chips', 'Forms', 'Alerts', 'Fields', 'Event cards', 'Ticket panel', 'Plans', 'Membership', 'Home blocks', 'Flows', 'Account'];
+const slug = (s: string) => s.toLowerCase().replace(/\s+/g, '-');
+---
+<BaseLayout title="Styleguide" noindex>
+  <div class="mx-auto flex max-w-[var(--container)] flex-col gap-16 px-[var(--gutter)] py-12 md:py-20">
+    <header class="flex flex-col gap-4">
+      <p class="t-eyebrow">09 · Components · build reference</p>
+      <h1 class="t-h1 text-ink">Styleguide</h1>
+      <p class="max-w-[720px] font-sans text-[18px] leading-[1.6] text-muted">Tokens live in <code>src/styles/global.css</code>, components in <code>src/components</code>, copy in <code>src/data/site.ts</code>. Example prices ($XX) appear here only.</p>
+      <nav aria-label="Styleguide sections" class="flex flex-wrap gap-2">{sections.map((s) => <Chip href={`#${slug(s)}`}>{s}</Chip>)}</nav>
+    </header>
+
+    <section id="colors" class="flex flex-col gap-6"><h2 class="t-h2">Colors</h2>
+      <ul class="grid grid-cols-2 gap-4 md:grid-cols-4">
+        {colors.map(([n, hex, use]) => (
+          <li class="flex flex-col gap-2"><span class="h-24 rounded-sm border border-line" style={`background:${hex}`}></span><span class="font-sans text-[14px] font-medium">{n} · {hex}</span><span class="font-sans text-[14px] text-muted">{use}</span></li>
+        ))}
+      </ul>
+      <Perforation /><p class="font-sans text-[14px] text-muted">Perforation: 1px dashed rgba(92,90,85,.5). Radius 2 / 4 / pill. Gutters 20 (mobile) · 40 (tablet) · 80 at 1440 → 160 at 1920. Content 1280 at 1440, 1600 at 1920.</p>
+    </section>
+
+    <section id="typography" class="flex flex-col gap-6"><h2 class="t-h2">Typography</h2>
+      <p class="font-sans text-[16px] text-muted">Cormorant Garamond (display) + Jost (UI and body). Fluid sizes scale from 390 to 1440. Numbers inside Cormorant values use Jost Medium (<code>.num</code>).</p>
+      <ul class="flex flex-col divide-y divide-line border-y border-line">
+        {type.map(([cls, label, sample]) => <li class="flex flex-col gap-2 py-5 md:flex-row md:items-baseline md:gap-8"><span class="w-64 shrink-0 font-sans text-[14px] text-muted">{label}<br /><code>.{cls}</code></span><span class={`${cls} text-ink`}>{sample}</span></li>)}
+      </ul>
+    </section>
+
+    <section id="icons" class="flex flex-col gap-6"><h2 class="t-h2">Icons</h2>
+      <ul class="flex flex-wrap gap-4">{icons.map((n) => <li class="flex w-24 flex-col items-center gap-2 bg-sand p-4"><span class="grid h-14 place-items-center text-ink"><Icon name={n} /></span><code class="text-[12px]">{n}</code></li>)}</ul>
+    </section>
+
+    <section id="buttons" class="flex flex-col gap-6"><h2 class="t-h2">Buttons</h2>
+      <div class="flex flex-wrap items-center gap-4">
+        <Button href="#">Explore Events</Button><Button size="sm" href="#">View event</Button><Button disabled>Disabled</Button>
+        <Button variant="link" href="#">Discover TABLE 01</Button><Button variant="link" size="sm" href="#">Google</Button><Button variant="link" disabled>Sold out</Button>
+        <Button variant="nav" href="#">Become a Member</Button>
+        <a href="#" class="t-link text-ink">Explore other events  →</a>
+      </div>
+      <div class="max-w-[350px]"><Button full size="sm" href="#">Full width (mobile)</Button></div>
+    </section>
+
+    <section id="badges" class="flex flex-col gap-6"><h2 class="t-h2">Status badges</h2>
+      <div class="flex flex-wrap gap-3">{badges.map((b) => <Badge status={b} />)}</div>
+    </section>
+
+    <section id="chips" class="flex flex-col gap-6"><h2 class="t-h2">Chips</h2>
+      <div class="flex flex-wrap gap-2"><Chip selected>All</Chip>{categories.map((c) => <Chip>{c.name}</Chip>)}</div>
+    </section>
+
+    <section id="forms" class="flex flex-col gap-6"><h2 class="t-h2">Forms</h2>
+      <div class="grid max-w-[664px] gap-8 md:grid-cols-2">
+        <Input label="First name" name="sg-default" placeholder="Sarah" />
+        <Input label="First name" name="sg-filled" value="Sarah" />
+        <Input label="First name" name="sg-error" value="" error="This field is required" aria-invalid="true" />
+        <Input label="Password" name="sg-pw" type="password" value="password1" />
+      </div>
+      <div class="flex max-w-[664px] flex-col gap-2 bg-sand p-5"><Checkbox name="sg-c1" checked>I confirm I am 27 or older.</Checkbox><Checkbox name="sg-c2">Send me event announcements and member updates by email.</Checkbox></div>
+      <div class="flex max-w-[664px] flex-col gap-3 md:flex-row"><ChoiceTile name="sg-signin" value="password" title="Create a password" body="Log in with email and password." checked /><ChoiceTile name="sg-signin" value="link" title="Email me a login link" body="No password. We send a link each time." /></div>
+      <div class="max-w-[664px]"><MemberPrompt text="Member? Log in to get the member price ($XX)." /></div>
+    </section>
+
+    <section id="alerts" class="flex flex-col gap-6"><h2 class="t-h2">Alerts</h2>
+      <div class="grid gap-4 md:grid-cols-2">
+        <Alert type="error" title="Your payment didn’t go through.">Your card was declined and no charge was made. Try again or use a different card.</Alert>
+        <Alert type="info" title="You’ll finish payment on Stripe.">Secure checkout by Stripe. You’ll come back to HER TABLE when it’s done.</Alert>
+      </div>
+    </section>
+
+    <section id="fields" class="flex flex-col gap-6"><h2 class="t-h2">Info fields, rows, notes</h2>
+      <dl class="grid max-w-[664px] gap-6 md:grid-cols-2"><InfoField label="Date & time" value="Friday, December 5, 2026 · 6 to 9 PM" /><InfoField label="Capacity" value="40 women, 27+" /><InfoField size="sm" label="Tickets" value="2 · Order #HT-20481" /></dl>
+      <dl class="max-w-[664px]"><ReviewRow label="Name" value="Jessica Doe" editHref="#" /><ReviewRow label="Plan" value="6 months · $300 · renews automatically" editHref="#" /></dl>
+      <div class="grid max-w-[var(--content)] gap-8 md:grid-cols-2"><CancellationPolicy /><MembersFirstNote /></div>
+      <OrderLine text="Rooftop Golden Hour · 2 tickets" price="$XX" />
+    </section>
+
+    <section id="event-cards" class="flex flex-col gap-6"><h2 class="t-h2">Event cards</h2>
+      <div class="grid gap-10 md:grid-cols-2 lg:grid-cols-3">{events.map((e) => <EventCard event={e} />)}</div>
+    </section>
+
+    <section id="ticket-panel" class="flex flex-col gap-6"><h2 class="t-h2">Ticket panel · all states</h2>
+      <div class="grid items-start gap-6 md:grid-cols-2 xl:grid-cols-3">
+        {panels.map((p) => <div class="flex flex-col gap-2"><code class="text-[12px] text-muted">{p.state}</code><TicketPanel event={p.event} state={p.state} demoPrice={p.state !== 'date-soon' && p.state !== 'pricing-soon'} /></div>)}
+      </div>
+    </section>
+
+    <section id="plans" class="flex flex-col gap-6"><h2 class="t-h2">Plan cards</h2>
+      <div class="grid gap-6 md:grid-cols-3">{plans.map((p) => <PlanCard plan={p} selected={p.id === '6-months'} />)}</div>
+    </section>
+
+    <section id="membership" class="flex flex-col gap-6"><h2 class="t-h2">Membership blocks</h2>
+      <dl class="flex max-w-[624px] border-y border-line">{membership.facts.map((f, i) => <KeyFact value={f.value} label={f.label} first={i === 0} />)}</dl>
+      <ol class="max-w-[624px]">{membership.benefits.slice(0, 2).map((b, i) => <BenefitRow n={i + 1} text={b} />)}</ol>
+      <div class="max-w-[704px]">{membership.faq.slice(0, 2).map((f, i) => <FaqItem q={f.q} a={f.a} open={i === 0} />)}</div>
+      <NotifyCard />
+    </section>
+
+    <section id="home-blocks" class="flex flex-col gap-6"><h2 class="t-h2">Home blocks</h2>
+      <ul class="grid gap-6 md:grid-cols-3">{home.pillars.items.slice(0, 3).map((p, i) => <PillarCard n={i + 1} title={p.title} body={p.body} />)}</ul>
+      <ul class="grid gap-6 md:grid-cols-4">{categories.map((c) => <ExperienceCard title={c.name} body={c.body} image={c.image} href="#" />)}</ul>
+      <div class="flex flex-col gap-6 md:flex-row"><FlagCard type="red" text={table01.flags.red} /><FlagCard type="green" text={table01.flags.green} /></div>
+      <div class="grid gap-6 bg-sand p-6 md:grid-cols-2">{home.options.cards.map((c) => <OptionCard {...c} />)}</div>
+      <ol class="max-w-[624px]"><StepItem n={1} title="Members get first access." body="All seats are offered to members during an early booking window." /></ol>
+    </section>
+
+    <section id="flows" class="flex flex-col gap-6"><h2 class="t-h2">Checkout &amp; join</h2>
+      <JoinStepper step={2} />
+      <div class="grid items-start gap-6 md:grid-cols-2">
+        <OrderSummary type="ticket" title="Rooftop Golden Hour" detail="Fri, Dec 5 · 6 to 9 PM · West Hollywood" image="optionEvents" lines={[{ label: 'Ticket × 2', value: '$XX' }, { label: 'Member price', value: 'Not applied' }]} total="$XX" notes={['Your tickets and the exact address arrive by email. All guests must be 27+.']} />
+        <MembershipSummary />
+      </div>
+      <ol class="grid gap-6 md:grid-cols-3"><StepCard n={1} title="Visit your account" body="Manage your plan, tickets and card any time." /><StepCard n={3} title="TABLE 01 is coming" body="Members hear the date first. Watch your inbox." /></ol>
+    </section>
+
+    <section id="account" class="flex flex-col gap-6"><h2 class="t-h2">Account</h2>
+      <div class="flex flex-col gap-8 lg:flex-row">
+        <AccountNav active="membership" />
+        <div class="flex flex-1 flex-col gap-6">
+          <MembershipCard state="active" /><MembershipCard state="intro" /><MembershipCard state="grace" />
+          <PaymentCard /><PaymentCard declined />
+          <ul><TicketRow event={rooftop} meta="West Hollywood · 2 tickets · Order #HT-20481" /></ul>
+          <EmptyState />
+          <ChangeSummary from="From May 22, 2027" text="12 months · $600, renews automatically" />
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>

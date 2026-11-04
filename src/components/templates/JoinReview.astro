@@ -1,0 +1,41 @@
+---
+/** Figma 06.4 · Review & pay and 06.6 · Payment failed (`failed`). */
+import FlowLayout from '../../layouts/FlowLayout.astro';
+import { stripeCopy, demoMember } from '../../data/site';
+import Alert from '../ui/Alert.astro';
+import Button from '../ui/Button.astro';
+import ReviewRow from '../blocks/ReviewRow.astro';
+import MembershipSummary from '../blocks/MembershipSummary.astro';
+interface Props { failed?: boolean }
+const { failed = false } = Astro.props;
+---
+<FlowLayout
+  title={failed ? 'Join · Payment failed' : 'Join · Review & pay'}
+  backHref="/join/confirm-age"
+  step={4}
+  heading={failed ? 'Let’s try that again' : 'Review &amp; pay'}
+  intro={failed ? 'Nothing was charged. Your plan and details are saved.' : 'Check your details, then finish payment securely on Stripe.'}
+>
+  {failed && <Alert slot="before-heading" type="error" title={stripeCopy.failedTitle}>{stripeCopy.failedBody}</Alert>}
+  <dl>
+    <ReviewRow label="Name" value={`${demoMember.firstName} ${demoMember.lastName}`} editHref="/join/details" flow="fullName" />
+    <ReviewRow label="Email" value={demoMember.email} editHref="/join/details" flow="email" />
+    <ReviewRow label="Plan" value="6 months · $300 · renews automatically" editHref="/join" hook="review" />
+    <ReviewRow label="Age" value="Confirmed 27+" editHref="/join/confirm-age" />
+  </dl>
+  {!failed && <Alert type="info" title={stripeCopy.alertTitle}>{stripeCopy.alertBody}</Alert>}
+  <div class="flex flex-col gap-4 md:flex-row md:items-center md:gap-8">
+    <Button href="/join/redirect" class="max-md:w-full" data-plan="pay">{failed ? 'Try again · $300' : 'Pay $300 securely'}</Button>
+    {failed ? <a href="/join/redirect" class="t-link text-ink">Use a different card</a> : <a href="/join/confirm-age" class="t-link text-ink">←  Back</a>}
+  </div>
+  <p class="font-sans text-[14px] leading-5 text-muted">{stripeCopy.processed}</p>
+  <MembershipSummary slot="aside" />
+</FlowLayout>
+<script>
+  import { readFlow, fillFlow } from '../../lib/flow';
+  import { getPlan, renderPlan } from '../../lib/plans';
+  const f = readFlow();
+  if (f.firstName) f.fullName = `${f.firstName} ${f.lastName ?? ''}`.trim();
+  fillFlow(f);
+  renderPlan(getPlan(f.plan));
+</script>

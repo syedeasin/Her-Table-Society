@@ -1,0 +1,6 @@
+---
+/** "Her Table Society" wordmark: Cormorant Garamond italic 24, -2%. */
+interface Props { href?: string; class?: string }
+const { href = '/', class: cls } = Astro.props;
+---
+<a href={href} class:list={['font-serif text-[24px] italic leading-[1.2] tracking-[-0.02em] whitespace-nowrap text-ink', cls]} aria-label="Her Table Society, home">Her Table Society</a>

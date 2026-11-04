@@ -1,0 +1,20 @@
+---
+/** Member account shell (Figma 07): header "My account / Hello, Jessica." + Account Nav + main column (876). */
+import BaseLayout from './BaseLayout.astro';
+import AccountNav from '../components/blocks/AccountNav.astro';
+import { demoMember } from '../data/site';
+interface Props { title: string; active: 'membership' | 'tickets' | 'payment' | 'details' }
+const { title, active } = Astro.props;
+---
+<BaseLayout title={title} noindex>
+  <div class="mx-auto max-w-[var(--container)] px-[var(--gutter)]">
+    <div class="flex flex-col gap-3 pt-10 pb-6 md:pt-16 md:pb-10">
+      <p class="t-eyebrow">My account</p>
+      <h1 class="t-h2 text-ink">Hello, {demoMember.firstName}.</h1>
+    </div>
+    <div class="flex flex-col gap-8 pb-[72px] lg:flex-row lg:gap-16 lg:pb-[120px]">
+      <AccountNav active={active} />
+      <div class="flex min-w-0 flex-1 flex-col gap-8 lg:max-w-[1040px]"><slot /></div>
+    </div>
+  </div>
+</BaseLayout>

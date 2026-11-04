@@ -1,0 +1,44 @@
+---
+/** Figma 01 · TABLE 01 — Event (sand + 10% photo, poster card, flag cards, marquee). */
+import { home, table01 } from '../../data/site';
+import Photo from '../ui/Photo.astro';
+import Badge from '../ui/Badge.astro';
+import Button from '../ui/Button.astro';
+import Perforation from '../ui/Perforation.astro';
+import InfoField from '../ui/InfoField.astro';
+import FlagCard from '../blocks/FlagCard.astro';
+import FlagMarquee from './FlagMarquee.astro';
+const t = home.table01;
+---
+<section aria-labelledby="t01-title" class="relative isolate bg-sand pt-[72px] pb-[72px] md:pt-[120px] md:pb-[120px]">
+  <div class="absolute inset-0 -z-10 opacity-10"><Photo src="table01Bg" alt="" sizes="100vw" /></div>
+  <div class="mx-auto flex max-w-[var(--container)] flex-col gap-4 px-[var(--gutter)] md:gap-12">
+    <article class="flex flex-col overflow-hidden rounded-sm bg-cream lg:flex-row">
+      <div class="flex items-center justify-center bg-sand p-8 md:p-12 lg:shrink-0">
+        <div class="aspect-[2/3] w-full max-w-[286px] shadow-poster md:max-w-[400px] xl:w-[480px] xl:max-w-none">
+          <Photo src="table01Poster" alt="TABLE 01 poster: Red Flag, Green Flag. 27+ only, 2026, 7 PM to 11 PM." sizes="(min-width: 1280px) 480px, 400px" widths={[400, 600, 960]} fit="contain" />
+        </div>
+      </div>
+      <div class="flex flex-1 flex-col justify-center gap-6 px-6 pt-7 pb-8 md:gap-8 md:p-10 xl:p-14">
+        <div class="flex flex-col gap-3">
+          <Badge status="launch" label={t.badge} />
+          <h2 id="t01-title" class="font-serif text-[36px] leading-none tracking-[-0.03em] md:text-[56px]"><span class="text-red">Red Flag</span> / <span class="text-green">Green Flag</span></h2>
+          <p class="font-serif text-[24px] leading-[1.2] tracking-[-0.02em] text-ink">{table01.subtitle}</p>
+        </div>
+        <p class="font-sans text-[18px] leading-[1.6] text-ink">{table01.about[0]}</p>
+        <dl class="grid gap-5 sm:grid-cols-2 sm:gap-x-8 sm:gap-y-5">
+          {t.fields.map((f) => <InfoField label={f.label} value={f.value} />)}
+          <InfoField label="Dress code" value={table01.dressCode} class="sm:col-span-2" />
+        </dl>
+        <Perforation />
+        <Button href={t.cta.href} class="max-md:hidden">{t.cta.label}</Button>
+        <Button href={t.cta.href} size="sm" full class="md:hidden">{t.cta.label}</Button>
+      </div>
+    </article>
+    <div class="flex flex-col gap-4 md:flex-row md:gap-12">
+      <FlagCard type="red" text={table01.flags.red} />
+      <FlagCard type="green" text={table01.flags.green} />
+    </div>
+  </div>
+  <div class="mt-14 md:mt-[72px]"><FlagMarquee /></div>
+</section>

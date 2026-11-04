@@ -1,0 +1,36 @@
+---
+/** Figma 06.3 · Join 3 · Confirm 27+. */
+import FlowLayout from '../../layouts/FlowLayout.astro';
+import Checkbox from '../../components/ui/Checkbox.astro';
+import Button from '../../components/ui/Button.astro';
+import MembershipSummary from '../../components/blocks/MembershipSummary.astro';
+---
+<FlowLayout title="Join · Confirm 27+" backHref="/join/details" step={3} heading={'Confirm you’re <span class="num">27+</span>'} intro="HER TABLE is a society for women 27 and older. Members and their guests must be 27+, and ID may be checked at events.">
+  <form class="flex flex-col gap-8" novalidate action="/join/review" data-age-form>
+    <div class="flex flex-col gap-5 bg-sand p-5 md:p-6" data-check-group>
+      <Checkbox name="age27" required>I confirm I am 27 or older.</Checkbox>
+      <Checkbox name="terms" required>I agree to the <a href="/terms" class="underline underline-offset-4">membership terms</a>, including automatic renewal for 6 and 12 month plans.</Checkbox>
+      <Checkbox name="updates">Send me event announcements and member updates by email.</Checkbox>
+      <p class="hidden font-sans text-[12px] leading-4 text-error" data-check-error>Please confirm your age and accept the membership terms to continue.</p>
+    </div>
+    <div class="flex flex-col gap-4 md:flex-row md:items-center md:gap-8">
+      <Button type="submit" class="max-md:w-full">Continue to payment</Button>
+      <a href="/join/details" class="t-link text-ink">←  Back</a>
+    </div>
+  </form>
+  <MembershipSummary slot="aside" />
+</FlowLayout>
+<script>
+  import { validate } from '../../lib/forms';
+  import { formToFlow, readFlow, restoreForm, saveFlow } from '../../lib/flow';
+  import { getPlan, renderPlan } from '../../lib/plans';
+  renderPlan(getPlan(readFlow().plan));
+  const form = document.querySelector<HTMLFormElement>('[data-age-form]')!;
+  restoreForm(form);
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!validate(form)) return;
+    saveFlow(formToFlow(form));
+    location.href = form.action;
+  });
+</script>

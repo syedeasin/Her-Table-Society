@@ -1,0 +1,15 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/ui/Button.astro';
+---
+<BaseLayout title="Page not found" noindex>
+  <section class="mx-auto flex max-w-[var(--container)] flex-col items-start gap-8 px-[var(--gutter)] py-[72px] md:py-[160px]">
+    <p class="t-eyebrow">404</p>
+    <h1 class="t-h1 max-w-[900px] text-ink">This table isn’t set.</h1>
+    <p class="max-w-[600px] font-sans text-[18px] leading-[1.6] text-muted">The page you’re looking for has moved or no longer exists. No two tables are the same, but this one doesn’t exist at all.</p>
+    <div class="flex flex-col gap-4 md:flex-row">
+      <Button href="/events">Explore Events</Button>
+      <Button href="/" variant="link">Back to home</Button>
+    </div>
+  </section>
+</BaseLayout>

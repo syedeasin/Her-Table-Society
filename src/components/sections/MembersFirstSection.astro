@@ -1,0 +1,23 @@
+---
+/** Figma 02 · Members first: how early access works. */
+import { eventsPage } from '../../data/site';
+import Button from '../ui/Button.astro';
+import StepItem from '../blocks/StepItem.astro';
+const m = eventsPage.membersFirst;
+---
+<section aria-labelledby="mf-title" class="bg-sand px-5 py-[72px] md:p-[var(--gutter)] md:py-[120px]">
+  <div class="mx-auto flex max-w-[var(--content)] flex-col gap-6 lg:flex-row lg:justify-between lg:gap-24">
+    <div class="flex flex-col gap-6 lg:w-[480px] lg:shrink-0">
+      <div class="flex flex-col gap-2.5">
+        <p class="t-eyebrow">{m.eyebrow}</p>
+        <h2 id="mf-title" class="t-h2 text-ink">{m.title[0]}<br />{m.title[1]}</h2>
+      </div>
+      <p class="max-w-[417px] font-sans text-[18px] leading-[1.6] text-muted">{m.body}</p>
+      <Button href={m.cta.href} class="max-lg:hidden">{m.cta.label}</Button>
+    </div>
+    <div class="flex flex-col gap-6 lg:flex-1">
+      <ol>{m.steps.map((s, i) => <StepItem n={i + 1} title={s.title} body={s.body} />)}</ol>
+      <Button href={m.cta.href} size="sm" full class="lg:hidden">{m.cta.label}</Button>
+    </div>
+  </div>
+</section>

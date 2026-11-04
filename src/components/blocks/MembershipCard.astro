@@ -1,0 +1,37 @@
+---
+/** Figma "Account / Membership Card" states: active · intro · grace. */
+import { demoMember } from '../../data/site';
+import AccountCard from './AccountCard.astro';
+import Badge from '../ui/Badge.astro';
+import Button from '../ui/Button.astro';
+import InfoField from '../ui/InfoField.astro';
+import Mixed from '../ui/Mixed.astro';
+interface Props { state?: 'active' | 'intro' | 'grace' }
+const { state = 'active' } = Astro.props;
+const m = demoMember;
+const data = {
+  active: { badge: 'active' as const, title: '6-month membership', fields: [['Plan', '6 months · $300'], ['Member since', m.startDate], ['Renews on', `${m.renewDate} · $300`], ['Renewal reminders', m.reminders]] },
+  intro: { badge: 'intro-plan' as const, title: 'Introductory membership', fields: [['Plan', '3 months · $150 · paid'], ['Member since', m.startDate], ['Ends on', 'February 22, 2027'], ['Auto charge', 'None. Choose your next plan.']] },
+  grace: { badge: 'payment-due' as const, title: '6-month membership', fields: [['Plan', '6 months · $300'], ['Renewal', '$300 due November 22, 2026'], ['Grace period ends', 'November 29, 2026'], ['Your spot', 'Reserved until then']] },
+}[state];
+---
+<AccountCard eyebrow="Your membership">
+  <Badge slot="badge" status={data.badge} />
+  <p class="font-serif text-[32px] leading-[1.1] tracking-[-0.02em] text-ink md:text-[40px]"><Mixed text={data.title} /></p>
+  <dl class="grid gap-4 md:grid-cols-2 md:gap-x-8 md:gap-y-5">
+    {data.fields.map(([l, v]) => <InfoField label={l} value={v} />)}
+  </dl>
+  {state === 'active' && (
+    <div class="flex flex-col gap-3 md:flex-row md:items-center md:gap-8">
+      <Button href="/account/switch-plan" class="max-md:w-full">Switch plan</Button>
+      <a href="/account/cancel" class="t-link text-ink">Cancel renewal</a>
+    </div>
+  )}
+  {state === 'intro' && <a href="/membership#plans" class="t-link w-max text-ink">Compare plans  →</a>}
+  {state === 'grace' && (
+    <div class="flex flex-col gap-3 md:flex-row md:items-center md:gap-8">
+      <Button href="/account/update-card" class="max-md:w-full">Update card</Button>
+      <a href="mailto:hello@hertablesociety.com" class="t-link text-ink">Contact us</a>
+    </div>
+  )}
+</AccountCard>

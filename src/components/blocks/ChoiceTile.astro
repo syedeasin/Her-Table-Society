@@ -1,0 +1,14 @@
+---
+/** Figma "Choice Tile" (sign-in method): radio tile, selected = ink border. */
+interface Props { name: string; value: string; title: string; body: string; checked?: boolean }
+const { name, value, title, body, checked = false } = Astro.props;
+const id = `${name}-${value}`;
+---
+<label for={id} class="group flex flex-1 cursor-pointer flex-col gap-1 border border-line bg-cream px-4 py-3.5 has-checked:border-ink has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-ink md:p-4">
+  <input id={id} type="radio" name={name} value={value} checked={checked} class="sr-only" />
+  <span class="flex items-center gap-2.5">
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true" class="shrink-0"><circle cx="9" cy="9" r="8.5" stroke="#5C5A55" class="group-has-checked:stroke-ink" /><circle cx="9" cy="9" r="4.5" fill="#1B1A18" class="hidden group-has-checked:block" /></svg>
+    <span class="font-serif text-[22px] leading-[1.2] tracking-[-0.02em] text-ink">{title}</span>
+  </span>
+  <span class="font-sans text-[16px] leading-[1.6] text-muted md:text-[18px]">{body}</span>
+</label>

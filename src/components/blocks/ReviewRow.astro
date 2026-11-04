@@ -1,0 +1,11 @@
+---
+/** Figma "Detail Row / Review": label 14 muted, value Cormorant 22 (numbers Jost), Edit link. */
+import Mixed from '../ui/Mixed.astro';
+interface Props { label: string; value: string; editHref?: string; flow?: string; hook?: string }
+const { label, value, editHref, flow, hook } = Astro.props;
+---
+<div class="flex flex-wrap items-baseline gap-x-4 gap-y-1 border-b border-line py-3.5 md:flex-nowrap md:gap-6 md:py-4">
+  <dt class="w-full font-sans text-[14px] leading-5 text-muted md:w-[120px] md:shrink-0">{label}</dt>
+  <dd class="flex-1 font-serif text-[22px] leading-[1.3] tracking-[-0.02em] text-ink" data-flow={flow} data-plan={hook}><Mixed text={value} /></dd>
+  {editHref && <dd><a href={editHref} class="t-link text-ink">Edit<span class="sr-only"> {label.toLowerCase()}</span></a></dd>}
+</div>

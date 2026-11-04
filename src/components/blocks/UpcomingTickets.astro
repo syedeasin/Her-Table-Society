@@ -1,0 +1,12 @@
+---
+import { demoTickets, events } from '../../data/site';
+import TicketRow from './TicketRow.astro';
+const t = demoTickets.upcoming[0];
+---
+<section aria-labelledby="upcoming-title" class="flex flex-col gap-4">
+  <div class="flex items-baseline justify-between gap-4">
+    <h2 id="upcoming-title" class="font-serif text-[28px] italic leading-none tracking-[-0.03em] text-ink md:text-[32px]">Upcoming tickets</h2>
+    <a href="/account/tickets" class="t-link text-ink">View all</a>
+  </div>
+  <ul><TicketRow event={events.find((e) => e.slug === t.slug)!} meta={t.meta} /></ul>
+</section>

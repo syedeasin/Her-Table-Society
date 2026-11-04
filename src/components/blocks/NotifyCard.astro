@@ -1,0 +1,11 @@
+---
+/** Figma "Notify Card" (membership full). */
+import { membership } from '../../data/site';
+import NotifyForm from './NotifyForm.astro';
+---
+<div id="notify" class="flex w-full max-w-[720px] scroll-mt-28 flex-col gap-5 border border-line bg-sand px-5 py-8 md:px-14 md:py-12">
+  <h2 class="font-serif text-[32px] italic leading-none tracking-[-0.03em] text-ink md:text-[48px]">{membership.full.title}</h2>
+  <p class="font-sans text-[18px] leading-[1.6] text-muted">{membership.full.body} You can still buy single event tickets in the meantime.</p>
+  <NotifyForm source="membership-full" layout="row" success="Thank you. We’ll email you as soon as a spot opens." />
+  <a href="/events" class="t-link w-max text-ink">Explore Events  →</a>
+</div>

@@ -1,0 +1,89 @@
+---
+/** Figma 02 · Explore Events: header, category filter, featured TABLE 01, grid, members-first section. */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { categories, events, eventsPage as p, table01 } from '../../data/site';
+import Button from '../../components/ui/Button.astro';
+import Chip from '../../components/ui/Chip.astro';
+import Badge from '../../components/ui/Badge.astro';
+import Photo from '../../components/ui/Photo.astro';
+import EventCard from '../../components/blocks/EventCard.astro';
+import MembersFirstSection from '../../components/sections/MembersFirstSection.astro';
+---
+<BaseLayout title="Events" description="Upcoming HER TABLE experiences in Los Angeles: dinners, wellness, activities and book club. Book a single ticket, no membership required.">
+  <header class="mx-auto flex max-w-[var(--container)] flex-col gap-4 px-[var(--gutter)] pt-12 pb-8 md:gap-6 md:pt-24 md:pb-16">
+    <div class="flex flex-col gap-2">
+      <p class="t-eyebrow">{p.eyebrow}</p>
+      <h1 class="t-h1 text-ink">{p.title}</h1>
+    </div>
+    <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+      <p class="max-w-[600px] font-sans text-[18px] leading-[1.6] text-muted">{p.intro}</p>
+      <Button href={p.memberLink.href} variant="link" class="max-md:hidden">{p.memberLink.label}</Button>
+    </div>
+  </header>
+
+  <div class="border-y border-line">
+    <div class="mx-auto flex max-w-[var(--container)] items-center justify-between gap-6 py-4 md:px-[var(--gutter)] md:py-5">
+      <div class="no-scrollbar flex gap-2 overflow-x-auto px-5 md:px-0" role="group" aria-label="Filter by category" data-filters>
+        <Chip selected data-filter="all">All</Chip>
+        {categories.map((c) => <Chip data-filter={c.slug}>{c.name}</Chip>)}
+      </div>
+      <p class="hidden shrink-0 font-sans text-[14px] leading-5 text-muted lg:block">{p.sorted}</p>
+    </div>
+  </div>
+
+  <section aria-labelledby="featured-title" class="mx-auto flex max-w-[var(--container)] flex-col gap-4 px-[var(--gutter)] pt-10 md:gap-6 md:pt-16" data-featured data-category={table01.category}>
+    <h2 id="featured-title" class="t-eyebrow">{p.featured.eyebrow}</h2>
+    <article class="flex flex-col bg-sand md:flex-row">
+      <a href="/table-01" class="aspect-[2/3] shrink-0 md:w-[320px] lg:w-[400px]" tabindex="-1" aria-hidden="true">
+        <Photo src="table01Poster" alt="" sizes="(min-width: 1024px) 400px, (min-width: 768px) 320px, 100vw" widths={[400, 640, 800]} />
+      </a>
+      <div class="flex flex-col justify-center gap-3.5 px-5 py-6 md:gap-5 md:p-10 xl:p-14">
+        <Badge status="date-soon" />
+        <div class="flex flex-col gap-2">
+          <p class="t-label text-muted">{p.featured.category}</p>
+          <h3 class="font-serif text-[36px] leading-none tracking-[-0.03em] text-ink md:text-[56px]"><a href="/table-01" class="hover:underline decoration-1 underline-offset-4">Red Flag / Green Flag</a></h3>
+        </div>
+        <p class="font-sans text-[16px] leading-[1.6] text-muted md:text-[18px]">{p.featured.line}</p>
+        <p class="font-serif text-[20px] leading-[1.2] tracking-[-0.02em] text-ink md:text-[24px]">Dress code: {table01.dressCode}</p>
+        <div class="mt-2 flex flex-col gap-3 md:flex-row md:items-center md:gap-6">
+          <Button href={p.featured.cta.href} class="max-md:hidden">{p.featured.cta.label}</Button>
+          <Button href={p.featured.cta.href} size="sm" full class="md:hidden">{p.featured.cta.label}</Button>
+          <p class="font-sans text-[14px] leading-5 text-muted">{p.featured.note}</p>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <section aria-labelledby="grid-title" class="mx-auto flex max-w-[var(--container)] flex-col gap-10 px-[var(--gutter)] pt-14 pb-[72px] md:gap-12 md:pt-24 md:pb-[120px]">
+    <div class="flex items-baseline justify-between gap-4">
+      <h2 id="grid-title" class="font-serif text-[36px] italic leading-none tracking-[-0.03em] text-ink md:text-[56px]">{p.gridTitle}</h2>
+      <p class="font-sans text-[14px] leading-5 text-muted" aria-live="polite"><span data-count>{events.length}</span> experiences</p>
+    </div>
+    <div class="grid gap-10 md:grid-cols-2 md:gap-x-6 md:gap-y-12 lg:grid-cols-3" data-grid>
+      {events.map((e) => <EventCard event={e} />)}
+    </div>
+    <p class="hidden bg-sand p-6 font-sans text-[18px] leading-[1.6] text-muted" data-empty>No experiences in this category right now. New dates are added often, so check back soon.</p>
+  </section>
+
+  <MembersFirstSection />
+</BaseLayout>
+
+<script>
+  const chips = [...document.querySelectorAll<HTMLButtonElement>('[data-filter]')];
+  const cards = [...document.querySelectorAll<HTMLElement>('[data-event-card]')];
+  const featured = document.querySelector<HTMLElement>('[data-featured]');
+  const count = document.querySelector('[data-count]');
+  const empty = document.querySelector('[data-empty]');
+  const apply = (cat: string, push = true) => {
+    if (!chips.some((c) => c.dataset.filter === cat)) cat = 'all';
+    chips.forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.filter === cat)));
+    let n = 0;
+    cards.forEach((card) => { const show = cat === 'all' || card.dataset.category === cat; card.hidden = !show; if (show) n++; });
+    if (featured) featured.hidden = !(cat === 'all' || featured.dataset.category === cat);
+    if (count) count.textContent = String(n);
+    empty?.classList.toggle('hidden', n > 0);
+    if (push) { const u = new URL(location.href); cat === 'all' ? u.searchParams.delete('category') : u.searchParams.set('category', cat); history.replaceState(null, '', u); }
+  };
+  chips.forEach((c) => c.addEventListener('click', () => apply(c.dataset.filter!)));
+  apply(new URL(location.href).searchParams.get('category') ?? 'all', false);
+</script>

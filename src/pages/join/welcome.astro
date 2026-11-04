@@ -1,0 +1,59 @@
+---
+/** Figma 06.7 · Welcome to membership. */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { welcome, demoMember } from '../../data/site';
+import Icon from '../../components/ui/Icon.astro';
+import Badge from '../../components/ui/Badge.astro';
+import Button from '../../components/ui/Button.astro';
+import InfoField from '../../components/ui/InfoField.astro';
+import Mixed from '../../components/ui/Mixed.astro';
+import StepCard from '../../components/blocks/StepCard.astro';
+---
+<BaseLayout title="Welcome" noindex>
+  <section class="mx-auto flex max-w-[calc(720px+2*var(--gutter))] flex-col gap-8 px-[var(--gutter)] pt-14 pb-14 md:pt-24 md:pb-[72px]">
+    <Icon name="success" />
+    <div class="flex flex-col gap-3">
+      <div class="flex flex-col gap-1.5">
+        <p class="t-eyebrow">{welcome.eyebrow}</p>
+        <h1 class="t-h1-confirm text-ink">{welcome.title}</h1>
+      </div>
+      <p class="font-sans text-[18px] leading-[1.6] text-muted">Your membership is active. A confirmation and receipt are on their way to <span data-flow="email">{demoMember.email}</span>.</p>
+    </div>
+    <div class="flex flex-col gap-5 bg-sand px-5 py-6 md:p-8">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <p class="font-serif text-[30px] leading-[1.1] tracking-[-0.02em] text-ink md:text-[36px]" data-plan="name"><Mixed text="6-month membership" /></p>
+        <Badge status="active" />
+      </div>
+      <dl class="grid gap-4 sm:grid-cols-2 sm:gap-x-8 sm:gap-y-5">
+        <InfoField label="Plan" value="6 months · $300" />
+        <InfoField label="Start date" value={demoMember.startDate} />
+        <InfoField label="Renews on" value={demoMember.renewDate} />
+        <InfoField label="Reminders" value="14 and 3 days before renewal" />
+      </dl>
+    </div>
+  </section>
+  <section aria-labelledby="next-title" class="mx-auto flex max-w-[var(--container)] flex-col gap-5 px-[var(--gutter)] pb-[72px]">
+    <h2 id="next-title" class="text-center font-serif text-[36px] italic leading-none tracking-[-0.03em] text-ink md:text-[48px]">What’s next</h2>
+    <ol class="grid gap-4 md:grid-cols-3 md:gap-6">
+      {welcome.next.map((s, i) => <StepCard n={i + 1} title={s.title} body={s.body} />)}
+    </ol>
+    <div class="mt-3 flex flex-col gap-4 md:flex-row md:items-center md:justify-center md:gap-8">
+      <Button href="/account" class="max-md:w-full">Go to my account</Button>
+      <a href="/events" class="t-link text-center text-ink">Explore Events  →</a>
+    </div>
+  </section>
+</BaseLayout>
+<script>
+  import { readFlow, fillFlow } from '../../lib/flow';
+  import { getPlan, planText } from '../../lib/plans';
+  const f = readFlow();
+  fillFlow(f);
+  if (f.plan) {
+    const p = getPlan(f.plan); const t = planText(p);
+    const name = document.querySelector('[data-plan="name"]'); if (name) name.textContent = t.name;
+    const dds = document.querySelectorAll('dl dd');
+    if (dds[0]) dds[0].textContent = `${p.months} months · $${p.price}`;
+    if (dds[2]) dds[2].textContent = t.renewDate;
+    const dts = document.querySelectorAll('dl dt'); if (dts[2] && !p.renews) dts[2].textContent = 'Ends on';
+  }
+</script>

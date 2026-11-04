@@ -1,0 +1,15 @@
+---
+/** Figma 01 · Two options: Explore Events / Become a Member. */
+import { home } from '../../data/site';
+import OptionCard from '../blocks/OptionCard.astro';
+import SectionHead from '../blocks/SectionHead.astro';
+const o = home.options;
+---
+<section aria-label="Two ways to join" class="bg-sand px-5 py-[72px] md:px-[var(--gutter)] md:py-[140px]">
+  <div class="mx-auto flex max-w-[var(--content)] flex-col gap-10 md:gap-16">
+    <SectionHead eyebrow={o.eyebrow} title={o.title} intro={o.sub} align="center" />
+    <div class="grid gap-6 md:grid-cols-2 md:gap-6 xl:gap-12">
+      {o.cards.map((c) => <OptionCard {...c} />)}
+    </div>
+  </div>
+</section>

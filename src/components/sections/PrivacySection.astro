@@ -1,0 +1,13 @@
+---
+/** Figma 01 · Privacy note (ink + 10% photo). */
+import { home } from '../../data/site';
+import Photo from '../ui/Photo.astro';
+const p = home.privacy;
+---
+<section aria-labelledby="privacy-title" class="on-dark relative isolate bg-ink px-5 py-[72px] text-center md:p-[120px]">
+  <div class="absolute inset-0 -z-10 opacity-10"><Photo src="privacyBg" alt="" sizes="100vw" /></div>
+  <div class="mx-auto flex max-w-[800px] flex-col gap-4 md:gap-6">
+    <h2 id="privacy-title" class="t-h2 text-sand">{p.title}</h2>
+    <p class="font-sans text-[18px] leading-[1.6] text-sand">{p.bodyBefore}<span class="font-medium">{p.bodyName}</span>{p.bodyAfter}</p>
+  </div>
+</section>

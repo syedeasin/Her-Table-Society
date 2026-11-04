@@ -1,0 +1,14 @@
+---
+/** Order Summary · Membership (Figma 06), filled client-side for the chosen plan. */
+import OrderSummary from './OrderSummary.astro';
+---
+<OrderSummary
+  type="membership"
+  title="HER TABLE Membership"
+  detail="6 months · Renews automatically"
+  image="optionMembership"
+  lines={[{ label: '6-month membership', value: '$300', key: 'plan' }, { label: 'Equivalent', value: '$50/mo' }]}
+  total="$300"
+  strongNote="Membership only. Event tickets not included."
+  notes={['Renews on May 22, 2027 for $300. We’ll email you 14 and 3 days before. Switch plan or cancel any time before then.']}
+/>

@@ -1,0 +1,24 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HomeHero from '../components/sections/HomeHero.astro';
+import SocietySection from '../components/sections/SocietySection.astro';
+import PillarsSection from '../components/sections/PillarsSection.astro';
+import CalendarSection from '../components/sections/CalendarSection.astro';
+import Table01Section from '../components/sections/Table01Section.astro';
+import PrivacySection from '../components/sections/PrivacySection.astro';
+import OptionsSection from '../components/sections/OptionsSection.astro';
+---
+<BaseLayout>
+  <HomeHero />
+  <div class="h-10 md:h-16" aria-hidden="true"></div>
+  <SocietySection />
+  <div class="h-[72px] md:h-[120px]" aria-hidden="true"></div>
+  <PillarsSection />
+  <div class="h-[72px] md:h-[120px]" aria-hidden="true"></div>
+  <CalendarSection />
+  <div class="h-[72px] md:h-[120px]" aria-hidden="true"></div>
+  <Table01Section />
+  <PrivacySection />
+  <div class="h-[72px] md:h-[120px]" aria-hidden="true"></div>
+  <OptionsSection />
+</BaseLayout>

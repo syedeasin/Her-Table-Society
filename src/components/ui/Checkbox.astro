@@ -1,0 +1,13 @@
+---
+/** Figma "Checkbox": 16px square icon, Jost 16 muted, py8 gap8. Native input kept for a11y. */
+interface Props { name: string; id?: string; checked?: boolean; required?: boolean; value?: string; class?: string }
+const { name, id = name, checked = false, required = false, value = 'yes', class: cls } = Astro.props;
+---
+<label for={id} class:list={['group flex cursor-pointer items-start gap-2 py-2 font-sans text-[16px] leading-[1.6] text-muted', cls]}>
+  <input id={id} name={name} type="checkbox" value={value} checked={checked} required={required} class="peer sr-only" />
+  <span class="mt-[5px] grid size-4 shrink-0 place-items-center rounded-[1px] text-muted peer-checked:text-ink peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-ink">
+    <svg class="size-4 group-has-checked:hidden" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M14.5637 0.159912H1.43628C0.731416 0.159912 0.160004 0.731325 0.160004 1.43619V14.5636C0.160004 15.2685 0.731416 15.8399 1.43628 15.8399H14.5637C15.2686 15.8399 15.84 15.2685 15.84 14.5636V1.43619C15.84 0.731325 15.2686 0.159912 14.5637 0.159912ZM14.746 14.5636C14.746 14.6643 14.6644 14.746 14.5637 14.746H1.43628C1.33558 14.746 1.25396 14.6643 1.25396 14.5636V1.43619C1.25396 1.33549 1.33558 1.25386 1.43628 1.25387H14.5637C14.6644 1.25387 14.746 1.3355 14.746 1.43619V14.5636Z" fill="currentColor"/></svg>
+    <svg class="hidden size-4 group-has-checked:block" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M11.6898 5.64482C11.8849 5.8402 11.8849 6.15671 11.6898 6.35209L7.01917 11.0227C6.82379 11.2179 6.50728 11.2179 6.3119 11.0227L4.3102 9.02102C4.04758 8.73919 4.18855 8.27874 4.56394 8.19223C4.72591 8.1549 4.89585 8.20044 5.01747 8.31376L6.66553 9.96099L10.9825 5.64482C11.1779 5.44969 11.4944 5.44969 11.6898 5.64482ZM15.84 1.32782V14.6725C15.84 15.3174 15.3172 15.8401 14.6723 15.8402H1.32767C0.68276 15.8402 0.160004 15.3174 0.160004 14.6725V1.32782C0.160004 0.682938 0.682785 0.160156 1.32767 0.160156H14.6723C15.3172 0.160156 15.84 0.682938 15.84 1.32782ZM14.8392 1.32782C14.8392 1.23569 14.7645 1.16101 14.6723 1.16101H1.32767C1.23553 1.161 1.16085 1.23569 1.16085 1.32782V14.6725C1.16085 14.7646 1.23553 14.8393 1.32767 14.8393H14.6723C14.7645 14.8393 14.8392 14.7646 14.8392 14.6725V1.32782Z" fill="currentColor"/></svg>
+  </span>
+  <span class="peer-checked:text-ink"><slot /></span>
+</label>

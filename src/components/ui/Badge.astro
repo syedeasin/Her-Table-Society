@@ -1,0 +1,24 @@
+---
+/** Figma "Status Badge": Jost Medium 14/20 uppercase, pill, px20 py10. */
+import type { BadgeStatus } from '../../lib/badges';
+interface Props { status: BadgeStatus; label?: string; class?: string }
+const { status, label, class: cls } = Astro.props;
+const map: Record<BadgeStatus, [string, string]> = {
+  'early-access': ['Members early access', 'bg-ink text-cream'],
+  available: ['Available', 'bg-green text-cream'],
+  'member-price': ['Member price', 'bg-green text-cream'],
+  'few-left': ['Few spots left', 'bg-red text-cream'],
+  'sold-out': ['Sold out', 'bg-line text-muted'],
+  'members-only': ['Members only', 'bg-sand text-ink ring-1 ring-inset ring-ink'],
+  'date-soon': ['Date announced soon', 'bg-sand text-ink'],
+  'membership-full': ['Membership full', 'bg-line text-muted'],
+  active: ['Active', 'bg-green text-cream'],
+  confirmed: ['Confirmed', 'bg-green text-cream'],
+  'payment-due': ['Payment due', 'bg-red text-cream'],
+  'intro-plan': ['Intro plan', 'bg-sand text-red'],
+  'renewal-off': ['Renewal off', 'bg-line text-muted'],
+  launch: ['TABLE 01 · The launch event', 'bg-ink text-cream'],
+};
+const [text, colors] = map[status];
+---
+<span class:list={['inline-flex w-max items-center rounded-pill px-5 py-2.5 font-sans text-[14px] font-medium leading-5 uppercase tracking-[0.02em] whitespace-nowrap', colors, cls]}>{label ?? text}</span>

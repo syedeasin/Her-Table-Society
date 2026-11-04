@@ -1,0 +1,93 @@
+---
+/**
+ * Figma 03 · Event detail (all states). The ticket panel state comes from the event data.
+ * Desktop: content 664 + sticky ticket panel 440. Mobile: header, hero, ticket panel, content.
+ */
+import type { HtsEvent } from '../../data/site';
+import { events, site } from '../../data/site';
+import { badgeFor, categoryName, panelState } from '../../lib/events';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Photo from '../ui/Photo.astro';
+import Badge from '../ui/Badge.astro';
+import InfoField from '../ui/InfoField.astro';
+import TicketPanel from '../blocks/TicketPanel.astro';
+import CancellationPolicy from '../blocks/CancellationPolicy.astro';
+import MembersFirstNote from '../blocks/MembersFirstNote.astro';
+import EventCard from '../blocks/EventCard.astro';
+interface Props { event: HtsEvent; breadcrumb?: string; meta?: string }
+const { event: e, breadcrumb, meta } = Astro.props;
+const badge = badgeFor(e);
+const state = panelState(e);
+const isLaunch = !!e.launch;
+const crumb = breadcrumb ?? categoryName(e.category);
+const metaLine = meta ?? `${e.dateLong.replace(/, \d{4}/, '')} · ${e.area}`;
+const more = events.filter((x) => x.slug !== e.slug).slice(0, 3);
+const description = `${e.title}: ${e.about[0]}`.slice(0, 158);
+const jsonLd = e.startISO ? {
+  '@context': 'https://schema.org', '@type': 'Event', name: e.title, description: e.about[0], startDate: e.startISO, endDate: e.endISO,
+  eventStatus: 'https://schema.org/EventScheduled', eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+  location: { '@type': 'Place', name: e.area, address: { '@type': 'PostalAddress', addressLocality: e.area, addressRegion: 'CA', addressCountry: 'US' } },
+  organizer: { '@type': 'Organization', name: site.name, url: site.url },
+} : undefined;
+---
+<BaseLayout title={e.title} description={description} jsonLd={jsonLd}>
+  <header class="mx-auto flex max-w-[var(--container)] flex-col gap-3 px-[var(--gutter)] pt-6 pb-6 md:gap-5 md:pt-12 md:pb-10">
+    <nav aria-label="Breadcrumb">
+      <ol class="flex flex-wrap gap-x-2 font-sans text-[14px] leading-5 tracking-[0.08em] uppercase text-muted">
+        <li><a href="/events" class="hover:text-ink hover:underline">Events</a></li>
+        <li aria-hidden="true">/</li>
+        <li aria-current="page">{crumb}</li>
+      </ol>
+    </nav>
+    {badge && <Badge status={badge} class="md:hidden" />}
+    <div class="flex flex-wrap items-center gap-x-12 gap-y-3">
+      <h1 class="font-serif text-[44px] italic leading-none tracking-[-0.03em] text-ink md:text-[clamp(56px,33.14px+3.81vw,88px)]">{e.title}</h1>
+      {badge && <Badge status={badge} class="max-md:hidden" />}
+    </div>
+    <p class="font-sans text-[16px] leading-[1.6] text-muted md:text-[18px]">{metaLine}</p>
+  </header>
+
+  <div class="mx-auto max-w-[var(--container)] px-[var(--gutter)]">
+    {isLaunch ? (
+      <div class="h-[440px] overflow-hidden rounded-sm bg-sand p-6 md:h-auto md:aspect-[15/7] md:p-8">
+        <Photo src={e.image} alt="TABLE 01 poster: Red Flag, Green Flag" sizes="(min-width: 768px) 400px, 90vw" widths={[400, 800]} fit="contain" loading="eager" fetchpriority="high" />
+      </div>
+    ) : (
+      <div class="aspect-[4/3] overflow-hidden rounded-sm bg-sand md:aspect-[15/7]">
+        <Photo src={e.image} alt={e.title} sizes="(min-width: 1920px) 1600px, 100vw" loading="eager" fetchpriority="high" />
+      </div>
+    )}
+  </div>
+
+  <div class="mx-auto flex max-w-[var(--container)] flex-col px-[var(--gutter)] pb-14 lg:grid lg:grid-cols-[minmax(0,760px)_440px] lg:justify-between lg:gap-x-12 min-[1600px]:grid-cols-[minmax(0,880px)_480px] lg:pt-[72px] lg:pb-[120px] xl:gap-x-24">
+    <div class="pt-6 lg:col-start-2 lg:row-start-1 lg:pt-0">
+      <div class="lg:sticky lg:top-28"><TicketPanel event={e} state={state} class="max-lg:[&>span:first-child]:hidden" /></div>
+    </div>
+    <div class="flex flex-col gap-8 pt-10 md:gap-12 lg:col-start-1 lg:row-start-1 lg:pt-0">
+      <section aria-labelledby="about-title" class="flex flex-col gap-3 md:gap-4">
+        <h2 id="about-title" class="t-eyebrow">About this experience</h2>
+        {e.about.map((p) => <p class="font-sans text-[18px] leading-[1.6] text-ink">{p}</p>)}
+        {isLaunch && 'subtitle' in e && <p class="font-sans text-[18px] leading-[1.6] text-ink">{(e as HtsEvent & { subtitle: string }).subtitle}</p>}
+      </section>
+      <dl class="flex flex-col gap-5 border-y border-silver py-6 md:gap-6 md:py-8">
+        <InfoField label="Date & time" value={e.dateLong} />
+        <InfoField label="Location" value={e.location} />
+        <InfoField label="Dress code" value={e.dressCode} />
+        <div class="grid gap-5 sm:grid-cols-2 sm:gap-8">
+          <InfoField label="Capacity" value={e.capacity ? `${e.capacity} women, 27+` : 'Coming soon'} />
+          <InfoField label="Length" value={e.length} />
+        </div>
+        <InfoField label="Age" value="27+ only. Please bring ID." />
+      </dl>
+      <CancellationPolicy />
+      {e.access === 'early-access' && e.status !== 'sold-out' && <MembersFirstNote />}
+    </div>
+  </div>
+
+  <section aria-labelledby="more-title" class="mx-auto flex max-w-[var(--container)] flex-col gap-6 px-[var(--gutter)] pb-16 md:gap-10 md:pb-[120px]">
+    <h2 id="more-title" class="font-serif text-[32px] italic leading-none tracking-[-0.03em] text-ink md:text-[48px]">More experiences</h2>
+    <div class="grid gap-10 md:grid-cols-2 md:gap-6 lg:grid-cols-3">
+      {more.map((m, i) => <EventCard event={m} class={i === 2 ? 'max-lg:hidden' : ''} />)}
+    </div>
+  </section>
+</BaseLayout>

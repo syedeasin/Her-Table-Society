@@ -1,0 +1,107 @@
+---
+/**
+ * Figma 04.1 Checkout · Event ticket and 04.3 Payment failed.
+ * Static markup shows the Figma example (Rooftop Golden Hour × 2, "$XX") until a real event and price
+ * are passed as ?event=slug&qty=n; the client script then fills the summary from the event data.
+ */
+import FlowLayout from '../../layouts/FlowLayout.astro';
+import { stripeCopy, ticketing } from '../../data/site';
+import { clientEvents } from '../../lib/clientEvents';
+import Input from '../ui/Input.astro';
+import Checkbox from '../ui/Checkbox.astro';
+import Alert from '../ui/Alert.astro';
+import Button from '../ui/Button.astro';
+import MemberPrompt from '../blocks/MemberPrompt.astro';
+import OrderSummary from '../blocks/OrderSummary.astro';
+interface Props { failed?: boolean }
+const { failed = false } = Astro.props;
+const list = await clientEvents();
+---
+<FlowLayout
+  title={failed ? 'Payment failed' : 'Checkout'}
+  backHref="/events/rooftop-golden-hour"
+  heading={failed ? 'Let’s try that again' : 'Checkout'}
+  intro={failed ? 'Nothing was charged. Your details and tickets are saved for now.' : 'One-time ticket. No membership required.'}
+>
+  {failed && <Alert slot="before-heading" type="error" title={stripeCopy.failedTitle}>{stripeCopy.failedBody}</Alert>}
+
+  <div data-member-prompt><MemberPrompt text="Member? Log in to get the member price ($XX)." /></div>
+
+  <form class="flex flex-col gap-8" novalidate data-checkout-form>
+    <h2 class="font-serif text-[28px] italic leading-none tracking-[-0.03em] text-ink">Your details</h2>
+    <div class="grid gap-8 md:grid-cols-2 md:gap-6">
+      <Input label="First name" name="firstName" autocomplete="given-name" required placeholder="Jessica" />
+      <Input label="Last name" name="lastName" autocomplete="family-name" required placeholder="Doe" />
+    </div>
+    <Input label="Email" name="email" type="email" autocomplete="email" required placeholder="jessica@example.com" />
+    <Input label="Phone" name="phone" type="tel" autocomplete="tel" placeholder="(310) 555-0123" />
+    <div class="flex flex-col gap-4 bg-sand p-5" data-check-group>
+      <Checkbox name="age" required>I confirm that I and any guest on this order are 27 or older.</Checkbox>
+      <p class="hidden font-sans text-[12px] leading-4 text-error" data-check-error>Please confirm everyone on this order is 27 or older.</p>
+      <p class="font-sans text-[14px] leading-5 text-muted">{ticketing.cancellation.short}</p>
+    </div>
+    <Alert type="info" title={stripeCopy.alertTitle}>{stripeCopy.alertBody}</Alert>
+    <div class="flex flex-col gap-4 md:flex-row md:items-center md:gap-8">
+      <Button type="submit" class="max-md:w-full" data-pay-label>{failed ? 'Try again · $XX' : 'Pay $XX securely'}</Button>
+      {failed
+        ? <button type="submit" class="t-link text-ink" data-different-card>Use a different card</button>
+        : <a href="/events/rooftop-golden-hour" class="t-link text-ink" data-back-event>←  Back to event</a>}
+    </div>
+  </form>
+
+  <OrderSummary
+    slot="aside"
+    type="ticket"
+    title="Rooftop Golden Hour"
+    detail="Fri, Dec 5 · 6 to 9 PM · West Hollywood"
+    image="optionEvents"
+    lines={[{ label: 'Ticket × 2', value: '$XX', key: 'qty' }, { label: 'Member price', value: 'Not applied', key: 'member' }]}
+    total="$XX"
+    notes={['Your tickets and the exact address arrive by email. All guests must be 27+.']}
+  />
+</FlowLayout>
+
+<script is:inline type="application/json" id="checkout-events" set:html={JSON.stringify(list)}></script>
+<script>
+  import { validate } from '../../lib/forms';
+  import { formToFlow, restoreForm, saveFlow, readFlow } from '../../lib/flow';
+  import type { ClientEvent } from '../../lib/clientEvents';
+
+  const list: ClientEvent[] = JSON.parse(document.getElementById('checkout-events')!.textContent || '[]');
+  const params = new URL(location.href).searchParams;
+  const stored = readFlow();
+  const slug = params.get('event') ?? stored.event;
+  const qty = Math.min(4, Math.max(1, Number(params.get('qty') ?? stored.qty) || 1));
+  const ev = list.find((e) => e.slug === slug);
+  const form = document.querySelector<HTMLFormElement>('[data-checkout-form]')!;
+  restoreForm(form);
+
+  const set = (sel: string, v: string) => document.querySelectorAll<HTMLElement>(`[data-sum="${sel}"]`).forEach((el) => (el.textContent = v));
+  if (ev) {
+    const total = ev.price != null ? `$${(ev.price * qty).toLocaleString('en-US')}` : '$XX';
+    set('title', ev.title);
+    set('detail', `${ev.dateShort} · ${ev.area}`);
+    set('qty-label', `Ticket × ${qty}`);
+    set('qty-value', total);
+    set('total', total);
+    const img = document.querySelector<HTMLImageElement>('[data-order-summary] img');
+    if (img) { img.src = ev.thumb; img.removeAttribute('srcset'); }
+    const payLabel = document.querySelector('[data-pay-label] span');
+    if (payLabel) payLabel.textContent = payLabel.textContent!.replace('$XX', total);
+    document.querySelectorAll<HTMLAnchorElement>('[data-back], [data-back-event]').forEach((a) => (a.href = `/events/${ev.slug}`));
+    const prompt = document.querySelector<HTMLElement>('[data-member-prompt]');
+    if (prompt) {
+      if (ev.memberPrice == null) prompt.hidden = true;
+      else prompt.querySelector('p')!.textContent = `Member? Log in to get the member price ($${ev.memberPrice}).`;
+    }
+    saveFlow({ event: ev.slug, qty: String(qty), orderLine: `${ev.title} · ${qty} ticket${qty > 1 ? 's' : ''}`, orderTotal: total });
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!validate(form)) return;
+    saveFlow(formToFlow(form));
+    // Backend: create a Stripe Checkout Session here and redirect to its URL.
+    location.href = '/checkout/redirect';
+  });
+</script>

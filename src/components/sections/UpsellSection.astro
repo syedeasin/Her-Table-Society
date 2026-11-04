@@ -1,0 +1,14 @@
+---
+/** Figma 04.4 · Upsell: "Loved booking with us?" */
+import { upsell } from '../../data/site';
+import Button from '../ui/Button.astro';
+---
+<section aria-labelledby="upsell-title" class="bg-sand px-5 py-14 md:px-[var(--gutter)] md:py-20">
+  <div class="mx-auto flex max-w-[var(--content)] flex-col gap-6 md:flex-row md:items-center md:justify-between md:gap-16">
+    <div class="flex max-w-[720px] flex-col gap-3">
+      <h2 id="upsell-title" class="font-serif text-[36px] italic leading-none tracking-[-0.03em] text-ink md:text-[48px]">{upsell.title}</h2>
+      <p class="font-sans text-[18px] leading-[1.6] text-muted">{upsell.body}</p>
+    </div>
+    <Button href={upsell.cta.href} class="max-md:w-full">{upsell.cta.label}</Button>
+  </div>
+</section>

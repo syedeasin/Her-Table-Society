@@ -1,0 +1,52 @@
+---
+/** Figma "Site Nav" (Desktop px120 py15 / Mobile px20 py14, Join + menu). Sticky, with an accessible mobile menu dialog. */
+import { nav } from '../../data/site';
+import Wordmark from './Wordmark.astro';
+import Button from '../ui/Button.astro';
+import Icon from '../ui/Icon.astro';
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isActive = (href: string) => path === href || path.startsWith(href + '/');
+---
+<header class="sticky top-0 z-40 border-b border-sand bg-cream">
+  <div class="mx-auto flex max-w-[var(--container)] items-center justify-between px-[var(--gutter)] py-3.5 lg:py-[15px]">
+    <Wordmark />
+    <nav aria-label="Main" class="hidden items-center gap-8 lg:flex">
+      {nav.links.map((l) => (
+        <a href={l.href} aria-current={isActive(l.href) ? 'page' : undefined} class="t-button py-3 text-ink underline-offset-[6px] hover:underline aria-[current=page]:underline">{l.label}</a>
+      ))}
+      <Button variant="nav" href={nav.cta.href}>{nav.cta.label}</Button>
+    </nav>
+    <div class="flex items-center gap-2 lg:hidden">
+      <Button variant="nav" href={nav.cta.href}>{nav.cta.short}</Button>
+      <button type="button" class="grid size-11 place-items-center text-ink" aria-label="Open menu" aria-haspopup="dialog" aria-controls="site-menu" data-menu-open>
+        <Icon name="menu" />
+      </button>
+    </div>
+  </div>
+</header>
+
+<dialog id="site-menu" aria-label="Menu" class="m-0 h-dvh max-h-none w-full max-w-none bg-cream p-0 text-ink backdrop:bg-ink/40">
+  <div class="flex min-h-full flex-col px-5 pb-12">
+    <div class="flex items-center justify-between py-3.5">
+      <Wordmark />
+      <button type="button" class="grid size-11 place-items-center" aria-label="Close menu" data-menu-close><Icon name="close" /></button>
+    </div>
+    <nav aria-label="Mobile" class="mt-10 flex flex-col">
+      {nav.links.map((l) => (
+        <a href={l.href} aria-current={isActive(l.href) ? 'page' : undefined} class="border-b border-line py-5 font-serif text-[40px] italic leading-none tracking-[-0.03em]">{l.label}</a>
+      ))}
+      <a href={nav.login.href} class="t-link mt-8 text-muted">{nav.login.label}  →</a>
+    </nav>
+    <div class="mt-auto pt-10"><Button href={nav.cta.href} full size="sm">{nav.cta.label}</Button></div>
+  </div>
+</dialog>
+
+<script>
+  const dlg = document.getElementById('site-menu') as HTMLDialogElement | null;
+  const opener = document.querySelector<HTMLButtonElement>('[data-menu-open]');
+  opener?.addEventListener('click', () => { dlg?.showModal(); opener.setAttribute('aria-expanded', 'true'); });
+  dlg?.querySelector('[data-menu-close]')?.addEventListener('click', () => dlg.close());
+  dlg?.addEventListener('close', () => { opener?.setAttribute('aria-expanded', 'false'); opener?.focus(); });
+  dlg?.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+  window.matchMedia('(min-width: 64rem)').addEventListener('change', (m) => { if (m.matches) dlg?.close(); });
+</script>

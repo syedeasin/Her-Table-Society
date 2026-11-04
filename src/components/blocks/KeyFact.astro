@@ -1,0 +1,9 @@
+---
+/** Figma "Key Fact": value Jost Medium 20 + label 14 muted. First item has no left padding/border. */
+interface Props { value: string; label: string; first?: boolean }
+const { value, label, first = false } = Astro.props;
+---
+<div class:list={['flex flex-1 flex-col gap-1 py-4 pr-2 md:py-5 md:pr-6', !first && 'border-l border-line pl-3.5 md:pl-6']}>
+  <dt class="order-2 font-sans text-[14px] leading-5 text-muted">{label}</dt>
+  <dd class="order-1 font-sans text-[18px] font-medium leading-6 text-ink md:text-[20px]">{value}</dd>
+</div>

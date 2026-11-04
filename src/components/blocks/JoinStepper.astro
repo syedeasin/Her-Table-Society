@@ -1,0 +1,34 @@
+---
+/** Figma "Join Stepper": desktop circles + connectors; mobile "Step 2 of 4" + segmented bar. */
+import { joinSteps } from '../../data/site';
+interface Props { step: number; class?: string }
+const { step, class: cls } = Astro.props;
+---
+<nav aria-label="Join steps" class={cls}>
+  <ol class="hidden max-w-[900px] items-center gap-5 md:flex">
+    {joinSteps.map((label, i) => {
+      const n = i + 1; const done = n < step; const current = n === step;
+      return (
+        <>
+          <li class="flex shrink-0 items-center gap-3" aria-current={current ? 'step' : undefined}>
+            <span class:list={['grid size-8 place-items-center rounded-full border font-sans text-[14px] font-medium',
+              done ? 'border-ink bg-ink text-cream' : current ? 'border-ink bg-cream text-ink' : 'border-silver bg-cream text-muted']}>
+              {done ? <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7.5L5.8 10L11 4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" /></svg> : n}
+            </span>
+            <span class:list={['t-button', done || current ? 'text-ink' : 'text-muted']}>{label}{done && <span class="sr-only"> (done)</span>}</span>
+          </li>
+          {n < joinSteps.length && <li aria-hidden="true" class:list={['h-px flex-1', done ? 'bg-ink' : 'bg-silver']}></li>}
+        </>
+      );
+    })}
+  </ol>
+  <div class="flex flex-col gap-3 md:hidden">
+    <div class="flex items-baseline justify-between gap-4">
+      <p class="font-sans text-[14px] leading-5 tracking-[0.08em] uppercase text-muted">Step {step} of {joinSteps.length}</p>
+      <p class="font-serif text-[20px] leading-[1.2] text-ink">{joinSteps[step - 1]}</p>
+    </div>
+    <div class="flex gap-1" aria-hidden="true">
+      {joinSteps.map((_, i) => <span class:list={['h-[3px] flex-1', i < step ? 'bg-ink' : 'bg-line']}></span>)}
+    </div>
+  </div>
+</nav>

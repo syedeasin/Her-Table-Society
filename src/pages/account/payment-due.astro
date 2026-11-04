@@ -1,0 +1,12 @@
+---
+/** Figma 07.7 · Payment failed (7-day grace period). */
+import AccountLayout from '../../layouts/AccountLayout.astro';
+import Alert from '../../components/ui/Alert.astro';
+import MembershipCard from '../../components/blocks/MembershipCard.astro';
+import PaymentCard from '../../components/blocks/PaymentCard.astro';
+---
+<AccountLayout title="Payment due" active="membership">
+  <Alert type="error" title="Payment failed. Update your card by November 29, 2026.">We couldn’t charge your card for your renewal. Your spot is reserved during the 7-day grace period. If your card isn’t updated by November 29, your membership ends and the spot opens.</Alert>
+  <MembershipCard state="grace" />
+  <PaymentCard declined />
+</AccountLayout>

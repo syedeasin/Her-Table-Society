@@ -1,0 +1,13 @@
+---
+/** Figma 01 · Pillars: "Six things every table shares." */
+import { home } from '../../data/site';
+import PillarCard from '../blocks/PillarCard.astro';
+import SectionHead from '../blocks/SectionHead.astro';
+const p = home.pillars;
+---
+<section aria-label={p.title} class="mx-auto flex max-w-[var(--container)] flex-col gap-10 px-[var(--gutter)] md:gap-16">
+  <SectionHead eyebrow={p.eyebrow} title={p.title} />
+  <ul class="grid gap-3 md:grid-cols-2 md:gap-6 lg:grid-cols-3">
+    {p.items.map((it, i) => <PillarCard n={i + 1} title={it.title} body={it.body} />)}
+  </ul>
+</section>

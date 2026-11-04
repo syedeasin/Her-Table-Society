@@ -1,0 +1,85 @@
+---
+/** Figma 04.4 · Ticket confirmed. Shows the Figma example unless the checkout flow stored a real order. */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { events } from '../../data/site';
+import { calendarLinks } from '../../lib/events';
+import { clientEvents } from '../../lib/clientEvents';
+import Icon from '../../components/ui/Icon.astro';
+import Badge from '../../components/ui/Badge.astro';
+import Button from '../../components/ui/Button.astro';
+import Photo from '../../components/ui/Photo.astro';
+import InfoField from '../../components/ui/InfoField.astro';
+import CancellationPolicy from '../../components/blocks/CancellationPolicy.astro';
+import UpsellSection from '../../components/sections/UpsellSection.astro';
+const e = events.find((x) => x.slug === 'rooftop-golden-hour')!;
+const cal = calendarLinks(e)!;
+const list = (await clientEvents()).map((c) => ({ ...c, cal: calendarLinks(events.find((x) => x.slug === c.slug)!) }));
+---
+<BaseLayout title="Ticket confirmed" noindex>
+  <section class="mx-auto flex max-w-[calc(880px+2*var(--gutter))] flex-col gap-8 px-[var(--gutter)] py-14 md:py-24">
+    <Icon name="success" />
+    <div class="flex flex-col gap-3">
+      <div class="flex flex-col gap-1.5">
+        <p class="t-eyebrow">Ticket confirmed</p>
+        <h1 class="t-h1-confirm text-ink">You’re on the list.</h1>
+      </div>
+      <p class="font-sans text-[18px] leading-[1.6] text-muted">Your <span data-c="qty">2</span> <span data-c="noun">tickets are</span> confirmed. We’ve emailed them to <span data-c="email">jessica@example.com</span> with the exact address.</p>
+    </div>
+
+    <article class="flex flex-col overflow-hidden border border-line bg-cream md:flex-row">
+      <div class="h-[220px] shrink-0 md:h-auto md:w-[260px]"><Photo src={e.image} alt="" sizes="260px" widths={[400, 520]} /></div>
+      <div class="flex flex-1 flex-col gap-7 p-6 md:p-10">
+        <div class="flex flex-col gap-3">
+          <Badge status="confirmed" />
+          <h2 class="font-serif text-[32px] leading-[1.05] tracking-[-0.02em] text-ink md:text-[40px]" data-c="title">{e.title}</h2>
+        </div>
+        <hr class="border-line" />
+        <dl class="grid gap-6 sm:grid-cols-2 sm:gap-x-8">
+          <InfoField size="sm" label="Date & time" value={e.dateLong} class="sm:col-span-2" />
+          <InfoField size="sm" label="Location" value="West Hollywood. Exact address in your email." />
+          <InfoField size="sm" label="Tickets" value="2 · Order #HT-20481" />
+          <InfoField size="sm" label="Dress code" value={e.dressCode} class="sm:col-span-2" />
+        </dl>
+      </div>
+    </article>
+
+    <div class="flex flex-col items-center gap-3">
+      <p class="t-eyebrow">Add to calendar</p>
+      <div class="flex flex-wrap justify-center gap-3">
+        <Button variant="link" size="sm" href={cal.google} target="_blank" rel="noopener" data-cal="google">Google</Button>
+        <Button variant="link" size="sm" href={cal.apple} download data-cal="apple">Apple</Button>
+        <Button variant="link" size="sm" href={cal.outlook} target="_blank" rel="noopener" data-cal="outlook">Outlook</Button>
+      </div>
+    </div>
+
+    <CancellationPolicy />
+
+    <div class="flex flex-col gap-4 md:flex-row md:items-center md:gap-8">
+      <Button href="/account/tickets" class="max-md:w-full">View my tickets</Button>
+      <a href="/events" class="t-link text-ink">Explore more events  →</a>
+    </div>
+  </section>
+  <UpsellSection />
+</BaseLayout>
+
+<script is:inline type="application/json" id="confirm-events" set:html={JSON.stringify(list)}></script>
+<script>
+  import { readFlow } from '../../lib/flow';
+  const f = readFlow();
+  const list = JSON.parse(document.getElementById('confirm-events')!.textContent || '[]') as { slug: string; title: string; dateLong: string; area: string; dressCode: string; cal: Record<string, string> | null }[];
+  const ev = list.find((e) => e.slug === f.event);
+  const set = (k: string, v: string) => document.querySelectorAll<HTMLElement>(`[data-c="${k}"]`).forEach((el) => (el.textContent = v));
+  if (f.email) set('email', f.email);
+  if (ev) {
+    const qty = Number(f.qty) || 1;
+    set('qty', String(qty));
+    set('noun', qty > 1 ? 'tickets are' : 'ticket is');
+    set('title', ev.title);
+    const dds = document.querySelectorAll<HTMLElement>('article dl dd');
+    if (dds[0]) dds[0].textContent = ev.dateLong;
+    if (dds[1]) dds[1].textContent = `${ev.area}. Exact address in your email.`;
+    if (dds[2]) dds[2].textContent = `${qty} · Order confirmation in your email`;
+    if (dds[3]) dds[3].textContent = ev.dressCode;
+    if (ev.cal) document.querySelectorAll<HTMLAnchorElement>('[data-cal]').forEach((a) => (a.href = ev.cal![a.dataset.cal!]));
+  }
+</script>

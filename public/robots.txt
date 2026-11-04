@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /account/
+Disallow: /join/
+Disallow: /checkout/
+Disallow: /styleguide
+
+Sitemap: https://hertablesociety.com/sitemap-index.xml

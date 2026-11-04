@@ -1,0 +1,23 @@
+---
+/** Figma 07.3 · My tickets. */
+import AccountLayout from '../../layouts/AccountLayout.astro';
+import { demoTickets, events } from '../../data/site';
+import TicketRow from '../../components/blocks/TicketRow.astro';
+const find = (slug: string) => events.find((e) => e.slug === slug)!;
+const groups = [
+  { id: 'upcoming', title: 'Upcoming', items: demoTickets.upcoming, past: false },
+  { id: 'past', title: 'Past', items: demoTickets.past, past: true },
+];
+---
+<AccountLayout title="My tickets" active="tickets">
+  <h2 class="font-serif text-[36px] italic leading-[1.2] tracking-[-0.03em] text-ink md:text-[40px]">My tickets</h2>
+  {groups.map((g) => (
+    <section aria-labelledby={`${g.id}-title`} class:list={['flex flex-col gap-5', g.past && 'border-t border-silver pt-10']}>
+      <div class="flex items-center gap-3">
+        <h3 id={`${g.id}-title`} class="font-serif text-[28px] italic leading-none tracking-[-0.03em] text-ink md:text-[32px]">{g.title}</h3>
+        <span class="rounded-pill bg-sand px-2.5 py-0.5 font-sans text-[14px] font-medium leading-5 text-ink">{g.items.length}</span>
+      </div>
+      <ul class="flex flex-col gap-4">{g.items.map((t) => <TicketRow event={find(t.slug)} meta={t.meta} past={g.past} />)}</ul>
+    </section>
+  ))}
+</AccountLayout>

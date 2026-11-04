@@ -1,0 +1,16 @@
+---
+/** Figma "Checkout Header": back link + wordmark, "Secure checkout" with lock. Used on checkout and join flows. */
+import Wordmark from './Wordmark.astro';
+import Icon from '../ui/Icon.astro';
+interface Props { backHref?: string }
+const { backHref = '/' } = Astro.props;
+---
+<header class="border-b border-line bg-cream">
+  <div class="mx-auto flex max-w-[var(--container)] items-center justify-between px-[var(--gutter)] py-[18px] lg:py-6">
+    <div class="flex items-center gap-6">
+      <a href={backHref} class="t-link hidden text-muted hover:text-ink lg:inline-block" data-back>←  Back</a>
+      <Wordmark />
+    </div>
+    <p class="t-link flex items-center gap-2 text-ink hover:no-underline"><Icon name="lock" />Secure checkout</p>
+  </div>
+</header>

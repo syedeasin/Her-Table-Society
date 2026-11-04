@@ -1,0 +1,10 @@
+---
+/** Figma "Info Field": label Jost 14 muted, value Cormorant 24 (Large) / 20 (Small) with numbers in Jost Medium. */
+import Mixed from './Mixed.astro';
+interface Props { label: string; value: string; size?: 'lg' | 'sm'; class?: string }
+const { label, value, size = 'lg', class: cls } = Astro.props;
+---
+<div class:list={['flex flex-col gap-1.5', cls]}>
+  <dt class="font-sans text-[14px] leading-5 text-muted">{label}</dt>
+  <dd class:list={['font-serif leading-[1.2] tracking-[-0.02em] text-ink', size === 'lg' ? 'text-[20px] md:text-[24px]' : 'text-[20px]']}><Mixed text={value} /></dd>
+</div>

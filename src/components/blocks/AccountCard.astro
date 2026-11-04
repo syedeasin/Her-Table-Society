@@ -1,0 +1,12 @@
+---
+/** Shell for account cards (Figma "Account / Membership Card", "Account / Payment Card"). */
+interface Props { eyebrow: string; tone?: 'cream' | 'sand'; accent?: 'red'; class?: string }
+const { eyebrow, tone = 'cream', accent, class: cls } = Astro.props;
+---
+<section class:list={['flex flex-col gap-5 border px-5 py-6 md:p-8', tone === 'sand' ? 'bg-sand' : 'bg-cream', accent === 'red' ? 'border-red' : 'border-line', cls]}>
+  <div class="flex min-h-5 items-center justify-between gap-4">
+    <h2 class="font-sans text-[14px] leading-5 tracking-[0.08em] uppercase text-muted">{eyebrow}</h2>
+    <slot name="badge" />
+  </div>
+  <slot />
+</section>

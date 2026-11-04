@@ -1,0 +1,39 @@
+---
+/**
+ * Figma "Order Summary" (Ticket / Membership). Sand, p32 gap24, w440.
+ * Values carry data-* hooks so the client can fill the chosen event/quantity or plan.
+ */
+import type { ImageKey } from '../../data/images';
+import Photo from '../ui/Photo.astro';
+interface Line { label: string; value: string; key?: string }
+interface Props {
+  type: 'ticket' | 'membership';
+  title: string; detail: string; image: ImageKey;
+  lines: Line[]; total: string; notes: string[]; strongNote?: string; class?: string;
+}
+const { type, title, detail, image, lines, total, notes, strongNote, class: cls } = Astro.props;
+---
+<aside class:list={['flex w-full flex-col gap-6 bg-sand p-6 md:p-8', cls]} aria-label="Order summary" data-order-summary={type}>
+  <p class="font-sans text-[14px] leading-5 tracking-[0.08em] uppercase text-muted">Order summary</p>
+  <div class="flex items-center gap-4">
+    <div class="size-[72px] shrink-0 overflow-hidden rounded-sm bg-line"><Photo src={image} alt="" sizes="72px" widths={[144]} /></div>
+    <div class="flex flex-col gap-1">
+      <p class="font-serif text-[26px] leading-[1.1] tracking-[-0.02em] text-ink" data-sum="title">{title}</p>
+      <p class="font-sans text-[14px] leading-[1.35] text-muted" data-sum="detail">{detail}</p>
+    </div>
+  </div>
+  <dl class="flex flex-col gap-2.5 border-y border-silver py-5">
+    {lines.map((l) => (
+      <div class="flex justify-between gap-4 font-sans text-[16px] leading-[1.45]">
+        <dt class="text-muted" data-sum={l.key && `${l.key}-label`}>{l.label}</dt>
+        <dd class="text-ink" data-sum={l.key && `${l.key}-value`}>{l.value}</dd>
+      </div>
+    ))}
+  </dl>
+  <div class="flex items-center justify-between gap-4">
+    <p class="font-sans text-[14px] leading-5 tracking-[0.05em] uppercase text-ink">Total due today</p>
+    <p class="font-sans text-[34px] font-medium leading-none tracking-[-0.02em] text-ink" data-sum="total">{total}</p>
+  </div>
+  {strongNote && <p class="font-sans text-[14px] font-medium leading-[1.4] text-muted">{strongNote}</p>}
+  {notes.map((n, i) => <p class="font-sans text-[14px] leading-[1.4] text-muted" data-sum={i === 0 ? 'note' : undefined}>{n}</p>)}
+</aside>

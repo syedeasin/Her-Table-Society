@@ -1,0 +1,13 @@
+---
+/** Figma "Alert": error (cream, red border, red title) and info (sand, silver border, ink title). */
+interface Props { type?: 'error' | 'info'; title: string; class?: string; role?: 'alert' | 'status' }
+const { type = 'info', title, class: cls, role } = Astro.props;
+const err = type === 'error';
+---
+<div role={role ?? (err ? 'alert' : undefined)} class:list={['flex gap-3.5 border px-5 py-4', err ? 'border-red bg-cream' : 'border-silver bg-sand', cls]}>
+  <span aria-hidden="true" class:list={['mt-0.5 grid size-[22px] shrink-0 place-items-center rounded-full font-sans text-[14px] leading-none text-cream', err ? 'bg-red' : 'bg-ink']}>{err ? '!' : 'i'}</span>
+  <div class="flex flex-col gap-1">
+    <p class:list={['font-serif text-[22px] leading-[1.15] tracking-[-0.02em]', err ? 'text-red' : 'text-ink']}>{title}</p>
+    <div class="font-sans text-[16px] leading-[1.6] text-muted md:text-[18px]"><slot /></div>
+  </div>
+</div>

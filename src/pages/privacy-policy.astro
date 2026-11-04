@@ -1,0 +1,15 @@
+---
+import LegalLayout from '../layouts/LegalLayout.astro';
+import { site } from '../data/site';
+---
+<LegalLayout title="Privacy Policy" description="How HER TABLE SOCIETY collects, uses and protects your information.">
+  <p><strong>Placeholder.</strong> Final wording will be supplied by HER TABLE SOCIETY’s legal advisor before launch.</p>
+  <h2>What we collect</h2>
+  <p>When you buy a ticket, join as a member or leave your email, we collect your name, email, phone number and the details of your order. Payments are processed by Stripe; we never see or store your full card number.</p>
+  <h2>How we use it</h2>
+  <ul><li>To deliver tickets, memberships and event details.</li><li>To send reminders about renewals and events you booked.</li><li>To let you know when tickets or membership spots open, if you asked us to.</li></ul>
+  <h2>Privacy at the table</h2>
+  <p>We share the world of HER TABLE SOCIETY: the styling, the tables, the flowers. Not our members’ private lives. Private conversations are never content.</p>
+  <h2>Contact</h2>
+  <p>Questions? Email <a href={`mailto:${site.email}`}>{site.email}</a>.</p>
+</LegalLayout>

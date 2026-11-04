@@ -1,0 +1,6 @@
+---
+/** Uppercase text link (Jost 14, 8% tracking) used for "Log in  →", "Explore other events  →". */
+interface Props { href: string; muted?: boolean; class?: string; [key: string]: unknown }
+const { href, muted = false, class: cls, ...rest } = Astro.props;
+---
+<a href={href} class:list={['t-link inline-block', muted ? 'text-muted hover:text-ink' : 'text-ink', cls]} {...rest}><slot /></a>

@@ -1,0 +1,53 @@
+---
+/**
+ * Base document: SEO head, fonts, skip link, site nav and footer.
+ * header="checkout" swaps the nav for the Checkout Header and drops the footer (Figma 04 / 06 flows).
+ */
+import '../styles/global.css';
+import { site } from '../data/site';
+import SiteNav from '../components/layout/SiteNav.astro';
+import SiteFooter from '../components/layout/SiteFooter.astro';
+import CheckoutHeader from '../components/layout/CheckoutHeader.astro';
+interface Props {
+  title?: string; description?: string; image?: string; noindex?: boolean;
+  header?: 'site' | 'checkout' | 'none'; footer?: boolean; backHref?: string;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+}
+const { title, description = site.description, image = '/og-image.png', noindex = false, header = 'site', footer = header === 'site', backHref, jsonLd } = Astro.props;
+const fullTitle = title ? `${title} · ${site.name}` : `${site.name} · A private women’s society in Los Angeles`;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? site.url).href;
+const ogImage = new URL(image, Astro.site ?? site.url).href;
+const orgLd = { '@context': 'https://schema.org', '@type': 'Organization', name: site.name, url: site.url, email: site.email, logo: new URL('/favicon.svg', site.url).href, sameAs: site.social.map((s) => s.href) };
+const ld = [orgLd, ...(Array.isArray(jsonLd) ? jsonLd : jsonLd ? [jsonLd] : [])];
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <meta name="theme-color" content="#FCF8EF" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preload" href="/fonts/jost-400.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/cormorant-400-italic.woff2" as="font" type="font/woff2" crossorigin />
+    <script type="application/ld+json" set:html={JSON.stringify(ld)} />
+  </head>
+  <body class="min-h-dvh">
+    <a href="#main" class="skip-link">Skip to content</a>
+    {header === 'site' && <SiteNav />}
+    {header === 'checkout' && <CheckoutHeader backHref={backHref} />}
+    <main id="main" tabindex="-1" class="focus:outline-none"><slot /></main>
+    {footer && <SiteFooter />}
+  </body>
+</html>

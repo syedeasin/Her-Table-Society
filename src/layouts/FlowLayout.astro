@@ -1,0 +1,26 @@
+---
+/** Checkout / join layout (Figma 04, 06): Checkout Header, main pt56 px120 pb120, two columns (664 form + 440 summary). */
+import BaseLayout from './BaseLayout.astro';
+import JoinStepper from '../components/blocks/JoinStepper.astro';
+interface Props { title: string; description?: string; backHref?: string; step?: number; heading?: string; intro?: string }
+const { title, description, backHref, step, heading, intro } = Astro.props;
+---
+<BaseLayout title={title} description={description} header="checkout" backHref={backHref} noindex>
+  <div class="mx-auto flex max-w-[var(--container)] flex-col gap-8 px-[var(--gutter)] pt-8 pb-[72px] md:gap-12 md:pt-14 md:pb-[120px]">
+    {step && <JoinStepper step={step} />}
+    <slot name="top" />
+    <div class="flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between lg:gap-[96px]">
+      <div class="flex w-full flex-col gap-8 lg:max-w-[664px] lg:flex-1 min-[1600px]:max-w-[760px]">
+        <slot name="before-heading" />
+        {heading && (
+          <div class="flex flex-col gap-3">
+            <h1 class="t-h2-flow text-ink" set:html={heading} />
+            {intro && <p class="font-sans text-[18px] leading-[1.6] text-muted">{intro}</p>}
+          </div>
+        )}
+        <slot />
+      </div>
+      <div class="w-full lg:sticky lg:top-8 lg:w-[440px] lg:shrink-0 min-[1600px]:w-[480px]"><slot name="aside" /></div>
+    </div>
+  </div>
+</BaseLayout>

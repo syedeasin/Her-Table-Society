@@ -1,0 +1,19 @@
+---
+/** Figma "Chip": h40, px16, pill, silver border; selected = ink fill. Font: Jost (Figma uses Montserrat by mistake). */
+interface Props { selected?: boolean; href?: string; class?: string; [key: string]: unknown }
+const { selected = false, href, class: cls, ...rest } = Astro.props;
+const Tag: any = href ? 'a' : 'button';
+---
+<Tag
+  href={href}
+  type={href ? undefined : 'button'}
+  aria-pressed={href ? undefined : String(selected)}
+  aria-current={href && selected ? 'page' : undefined}
+  class:list={[
+    'inline-flex h-10 shrink-0 items-center rounded-pill border px-4 font-sans text-[14px] leading-5 whitespace-nowrap transition-colors',
+    href && selected ? 'border-ink bg-ink text-cream' : 'border-silver text-muted hover:border-ink hover:text-ink',
+    'aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-cream',
+    cls,
+  ]}
+  {...rest}
+><slot /></Tag>

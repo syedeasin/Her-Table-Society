@@ -1,0 +1,20 @@
+---
+import LegalLayout from '../layouts/LegalLayout.astro';
+import { site, ticketing } from '../data/site';
+---
+<LegalLayout title="Terms" description="Membership and ticket terms for HER TABLE SOCIETY.">
+  <p><strong>Placeholder.</strong> Final wording will be supplied by HER TABLE SOCIETY’s legal advisor before launch.</p>
+  <h2>Membership</h2>
+  <ul>
+    <li>Members and their guests must be 27 or older. ID may be checked at events.</li>
+    <li>The 6 and 12 month plans are paid upfront and renew automatically for the same term. We email you 14 and 3 days before renewal.</li>
+    <li>The 3-month introductory plan is for first-time members, once per person. It does not auto-charge and cannot be renewed.</li>
+    <li>You can switch plan or cancel renewal any time before your renewal date. Your membership stays active until the end of the paid term.</li>
+    <li>If a renewal payment fails, there is a 7-day grace period to update your card. After that the membership ends.</li>
+    <li>Membership is limited to 2,000 active members. Event tickets are purchased separately.</li>
+  </ul>
+  <h2>Event tickets</h2>
+  <ul>{ticketing.cancellation.terms.map((t) => <li>{t}</li>)}</ul>
+  <h2>Contact</h2>
+  <p>Questions? Email <a href={`mailto:${site.email}`}>{site.email}</a>.</p>
+</LegalLayout>

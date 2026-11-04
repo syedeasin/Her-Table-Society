@@ -1,0 +1,43 @@
+---
+/** Figma 07.6 · Intro plan ending: choose the next plan (nothing is charged until chosen). */
+import AccountLayout from '../../layouts/AccountLayout.astro';
+import { plans } from '../../data/site';
+import PlanCard from '../../components/blocks/PlanCard.astro';
+import Button from '../../components/ui/Button.astro';
+import Mixed from '../../components/ui/Mixed.astro';
+import MembershipCard from '../../components/blocks/MembershipCard.astro';
+import PaymentCard from '../../components/blocks/PaymentCard.astro';
+import Upcoming from '../../components/blocks/UpcomingTickets.astro';
+const options = plans.filter((p) => p.id !== 'intro');
+---
+<AccountLayout title="Choose your next plan" active="membership">
+  <form class="flex flex-col gap-5 border border-red bg-sand px-5 py-6 md:p-8" action="/join/review" data-next-plan aria-labelledby="intro-end-title">
+    <h2 id="intro-end-title" class="font-serif text-[28px] leading-[1.1] tracking-[-0.02em] text-ink md:text-[32px]"><Mixed text="Your intro membership ends on February 22, 2027." /></h2>
+    <p class="font-sans text-[18px] leading-[1.6] text-muted">Choose your next plan to keep your benefits. The introductory plan can’t be renewed, and nothing is charged until you choose.</p>
+    <fieldset class="grid gap-4 md:grid-cols-2">
+      <legend class="sr-only">Next plan</legend>
+      {options.map((p) => <PlanCard plan={p} name="plan" selected={p.id === '12-months'} />)}
+    </fieldset>
+    <div class="flex flex-col gap-4 md:flex-row md:items-center md:gap-8">
+      <Button type="submit" class="max-md:w-full" data-next-label>Continue with 12 months · $600</Button>
+      <a href="/account" class="t-link text-ink">Remind me later</a>
+    </div>
+  </form>
+  <MembershipCard state="intro" />
+  <PaymentCard />
+  <Upcoming />
+</AccountLayout>
+<script>
+  import { saveFlow } from '../../lib/flow';
+  const form = document.querySelector<HTMLFormElement>('[data-next-plan]')!;
+  const label = form.querySelector('[data-next-label] span');
+  form.querySelectorAll<HTMLInputElement>('input[name="plan"]').forEach((r) => r.addEventListener('change', () => {
+    if (label) label.textContent = `Continue with ${r.dataset.months} months · $${r.dataset.price}`;
+  }));
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const v = form.querySelector<HTMLInputElement>('input[name="plan"]:checked')!.value;
+    saveFlow({ plan: v });
+    location.href = form.action;
+  });
+</script>

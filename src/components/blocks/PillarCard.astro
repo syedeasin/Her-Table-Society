@@ -1,0 +1,12 @@
+---
+/** Figma "Pillar card": border silver, r4, p24 gap64 (mobile p20 gap12). */
+interface Props { n: number; title: string; body: string }
+const { n, title, body } = Astro.props;
+---
+<li class="flex flex-col gap-3 rounded-sm border border-silver p-5 md:gap-16 md:p-6">
+  <span class="font-sans text-[14px] leading-5 text-muted">{String(n).padStart(2, '0')}</span>
+  <div class="flex flex-col gap-2">
+    <h3 class="font-serif text-[32px] leading-[1.05] tracking-[-0.03em] text-ink">{title}</h3>
+    <p class="font-sans text-[18px] leading-[1.6] text-muted">{body}</p>
+  </div>
+</li>

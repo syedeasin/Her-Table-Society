@@ -1,0 +1,11 @@
+---
+/** Figma "Cancellation Policy": eyebrow + four dash-led terms (Hermen, Oct 30). */
+import { ticketing } from '../../data/site';
+interface Props { class?: string }
+---
+<div class:list={['flex flex-col gap-3', Astro.props.class]}>
+  <p class="t-eyebrow">{ticketing.cancellation.title}</p>
+  <ul class="flex flex-col gap-2 font-sans text-[16px] leading-6 text-ink">
+    {ticketing.cancellation.terms.map((t) => <li class="flex gap-3"><span aria-hidden="true">—</span><span>{t}</span></li>)}
+  </ul>
+</div>

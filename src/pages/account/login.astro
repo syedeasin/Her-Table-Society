@@ -1,0 +1,36 @@
+---
+/** Figma 07.1 · Log in. Front-end only: "Log in" opens the example account. */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Input from '../../components/ui/Input.astro';
+import Button from '../../components/ui/Button.astro';
+---
+<BaseLayout title="Log in" noindex>
+  <section class="flex justify-center px-[var(--gutter)] pt-12 pb-[72px] md:pt-[120px] md:pb-[160px]">
+    <form class="flex w-full max-w-[500px] flex-col gap-6 border border-silver bg-cream px-5 py-8 md:p-12" novalidate action="/account" data-login-form>
+      <h1 class="t-h2-flow text-ink">Welcome back.</h1>
+      <p class="font-sans text-[18px] leading-[1.6] text-muted">Log in to manage your membership and tickets.</p>
+      <Input label="Email" name="email" type="email" autocomplete="email" required placeholder="jessica@example.com" />
+      <Input label="Password" name="password" type="password" autocomplete="current-password" required placeholder="Your password" />
+      <a href="mailto:hello@hertablesociety.com?subject=Password%20reset" class="-mt-2 self-end font-sans text-[14px] leading-5 text-ink underline-offset-4 hover:underline">Forgot password?</a>
+      <Button type="submit" full>Log in</Button>
+      <div class="flex items-center gap-3 font-sans text-[14px] leading-5 text-muted" aria-hidden="true"><span class="h-px flex-1 bg-line"></span>or<span class="h-px flex-1 bg-line"></span></div>
+      <Button variant="link" full type="button" data-magic>Email me a login link</Button>
+      <p data-status role="status" class="font-sans text-[14px] leading-5 text-green empty:hidden"></p>
+      <a href="/membership" class="t-link text-center text-ink">Not a member yet? Become a member  →</a>
+      <p class="text-center font-sans text-[14px] leading-5 text-muted">Bought a single ticket? Your tickets are in your email. No account needed.</p>
+    </form>
+  </section>
+</BaseLayout>
+<script>
+  import { validate } from '../../lib/forms';
+  const form = document.querySelector<HTMLFormElement>('[data-login-form]')!;
+  form.addEventListener('submit', (e) => { e.preventDefault(); if (validate(form)) location.href = form.action; });
+  form.querySelector('[data-magic]')?.addEventListener('click', () => {
+    const email = form.querySelector<HTMLInputElement>('input[type="email"]')!;
+    const pw = form.querySelector<HTMLInputElement>('input[type="password"]')!;
+    pw.required = false;
+    const ok = validate(form);
+    pw.required = true;
+    if (ok) form.querySelector('[data-status]')!.textContent = `We’ve sent a login link to ${email.value.trim()}.`;
+  });
+</script>

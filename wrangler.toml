@@ -1,0 +1,5 @@
+name = "her-table-society"
+compatibility_date = "2025-09-01"
+pages_build_output_dir = "./dist"
+
+# Set LEAD_WEBHOOK_URL in the Cloudflare Pages dashboard (Settings > Environment variables).

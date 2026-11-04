@@ -1,0 +1,41 @@
+---
+/**
+ * Figma "Stripe hand-off": loader, message, order line, secure note and fallback link.
+ * Backend: replace `href` with the Stripe Checkout Session URL and redirect immediately.
+ * Front-end demo: continues to `href` after `delay` ms.
+ */
+import { stripeCopy } from '../../data/site';
+import OrderLine from './OrderLine.astro';
+import Icon from '../ui/Icon.astro';
+interface Props { line: string; price: string; href: string; delay?: number }
+const { line, price, href, delay = 3500 } = Astro.props;
+---
+<section class="mx-auto flex max-w-[var(--container)] flex-col items-center gap-10 px-[var(--gutter)] py-[120px] text-center md:gap-12 md:py-[200px]" data-handoff data-href={href} data-delay={delay}>
+  <div class="flex flex-col items-center gap-7">
+    <div class="flex gap-2.5" aria-hidden="true">
+      <span class="loader-dot size-2.5 rounded-full bg-ink"></span>
+      <span class="loader-dot size-2.5 rounded-full bg-ink [animation-delay:.2s]"></span>
+      <span class="loader-dot size-2.5 rounded-full bg-ink [animation-delay:.4s]"></span>
+    </div>
+    <div class="flex max-w-[580px] flex-col gap-4">
+      <h1 class="t-h2-flow text-ink" role="status">{stripeCopy.handoffTitle}</h1>
+      <p class="font-sans text-[18px] leading-[1.6] text-muted">{stripeCopy.handoffBody}</p>
+    </div>
+  </div>
+  <div class="flex flex-col items-center gap-2.5">
+    <p class="font-sans text-[14px] leading-5 tracking-[0.08em] uppercase text-muted">Your order</p>
+    <OrderLine text={line} price={price} />
+  </div>
+  <div class="flex w-full max-w-[480px] flex-col items-center gap-4 border-t border-line pt-6">
+    <p class="flex items-center gap-2 font-sans text-[14px] leading-5 tracking-[0.08em] uppercase text-ink"><Icon name="lock" />{stripeCopy.secure}</p>
+    <a href={href} class="font-sans text-[14px] font-medium leading-5 text-ink underline-offset-4 hover:underline" data-handoff-link>{stripeCopy.fallback}</a>
+  </div>
+</section>
+<script>
+  const el = document.querySelector<HTMLElement>('[data-handoff]');
+  if (el) {
+    const link = el.querySelector<HTMLAnchorElement>('[data-handoff-link]');
+    const go = () => { location.href = link?.href || el.dataset.href!; };
+    setTimeout(go, Number(el.dataset.delay) || 3500);
+  }
+</script>

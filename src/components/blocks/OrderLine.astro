@@ -1,0 +1,8 @@
+---
+/** Figma "Order Line": sand pill with item + Jost Medium price (Stripe hand-off). */
+interface Props { text: string; price: string }
+const { text, price } = Astro.props;
+---
+<p class="inline-flex w-max max-w-full items-center gap-3 rounded-[100px] bg-sand px-5 py-3 font-sans text-ink">
+  <span class="text-[14px] leading-5" data-sum="line">{text}</span><span class="text-[18px] font-medium leading-6" data-sum="total">{price}</span>
+</p>

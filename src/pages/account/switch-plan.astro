@@ -1,0 +1,41 @@
+---
+/** Figma 07.4 · Switch plan. The intro plan is not offered when switching. */
+import AccountLayout from '../../layouts/AccountLayout.astro';
+import { plans } from '../../data/site';
+import PlanCard from '../../components/blocks/PlanCard.astro';
+import ChangeSummary from '../../components/blocks/ChangeSummary.astro';
+import Button from '../../components/ui/Button.astro';
+const current = plans.find((p) => p.id === '6-months')!;
+const next = plans.find((p) => p.id === '12-months')!;
+---
+<AccountLayout title="Switch plan" active="membership">
+  <form class="flex flex-col gap-10" action="/account" data-switch-form>
+    <div class="flex flex-col gap-4">
+      <a href="/account" class="t-link w-max text-muted hover:text-ink">←  Membership</a>
+      <div class="flex flex-col gap-3">
+        <h2 class="font-serif text-[36px] italic leading-none tracking-[-0.03em] text-ink md:text-[48px]">Switch your plan</h2>
+        <p class="font-sans text-[18px] leading-[1.6] text-muted">Your new plan starts when your current term ends on May 22, 2027. Nothing is charged today.</p>
+      </div>
+    </div>
+    <div class="flex flex-col gap-4">
+      <div class="grid gap-6 md:grid-cols-2">
+        <div class="flex flex-col gap-2.5">
+          <p class="font-sans text-[14px] font-medium leading-5 text-muted">Current plan</p>
+          <PlanCard plan={current} class="flex-1" />
+        </div>
+        <div class="flex flex-col gap-2.5">
+          <p class="font-sans text-[14px] font-medium leading-5 text-ink">New plan</p>
+          <PlanCard plan={next} name="newPlan" selected class="flex-1" />
+        </div>
+      </div>
+      <p class="font-sans text-[14px] leading-5 text-muted">The 3-month introductory plan is only for first-time members, so it isn’t available when switching.</p>
+    </div>
+    <div class="flex flex-col gap-6">
+      <ChangeSummary from="From May 22, 2027" text="12 months · $600, renews automatically" />
+      <div class="flex flex-col gap-4 md:flex-row md:items-center md:gap-8">
+        <Button type="submit" class="max-md:w-full">Confirm switch</Button>
+        <a href="/account" class="t-link text-ink">Keep current plan</a>
+      </div>
+    </div>
+  </form>
+</AccountLayout>

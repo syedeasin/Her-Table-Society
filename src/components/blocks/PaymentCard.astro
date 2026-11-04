@@ -1,0 +1,13 @@
+---
+/** Figma "Account / Payment Card" (Default / Declined). */
+import { demoMember } from '../../data/site';
+import AccountCard from './AccountCard.astro';
+import Mixed from '../ui/Mixed.astro';
+interface Props { declined?: boolean }
+const { declined = false } = Astro.props;
+---
+<AccountCard eyebrow="Payment method">
+  <p class="font-serif text-[22px] leading-[1.2] tracking-[-0.02em] text-ink md:text-[26px]"><Mixed text={declined ? 'Visa ending 4242 · Declined' : demoMember.card} /></p>
+  <a href="/account/update-card" class="t-link w-max text-ink">Update card  →</a>
+  <p class="font-sans text-[14px] leading-5 text-muted">Card updates are handled securely by Stripe.</p>
+</AccountCard>

@@ -1,0 +1,10 @@
+---
+/** Figma "Empty State" (no upcoming tickets). */
+import Button from '../ui/Button.astro';
+---
+<div class="flex flex-col items-start gap-3 bg-sand px-6 py-10">
+  <p class="font-serif text-[28px] leading-[1.1] tracking-[-0.02em] text-ink">No upcoming tickets yet.</p>
+  <p class="font-sans text-[18px] leading-[1.6] text-muted">Tickets are booked per event. Find your next table.</p>
+  <Button href="/events" class="mt-1 max-md:hidden">Explore events</Button>
+  <Button href="/events" size="sm" full class="mt-1 md:hidden">Explore events</Button>
+</div>

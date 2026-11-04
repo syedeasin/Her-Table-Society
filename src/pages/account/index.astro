@@ -1,0 +1,12 @@
+---
+/** Figma 07.2 · Account · Membership (active). */
+import AccountLayout from '../../layouts/AccountLayout.astro';
+import MembershipCard from '../../components/blocks/MembershipCard.astro';
+import PaymentCard from '../../components/blocks/PaymentCard.astro';
+import Upcoming from '../../components/blocks/UpcomingTickets.astro';
+---
+<AccountLayout title="My account" active="membership">
+  <MembershipCard state="active" />
+  <PaymentCard />
+  <Upcoming />
+</AccountLayout>

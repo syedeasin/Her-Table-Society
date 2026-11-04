@@ -1,0 +1,14 @@
+---
+/** Figma 04.2 · Stripe hand-off · Event ticket. */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import StripeHandoff from '../../components/blocks/StripeHandoff.astro';
+---
+<BaseLayout title="Secure checkout" header="checkout" backHref="/checkout" noindex>
+  <StripeHandoff line="Rooftop Golden Hour · 2 tickets" price="$XX" href="/checkout/confirmed" />
+</BaseLayout>
+<script>
+  import { readFlow } from '../../lib/flow';
+  const f = readFlow();
+  document.querySelectorAll<HTMLElement>('[data-sum="line"]').forEach((el) => { if (f.orderLine) el.textContent = f.orderLine; });
+  document.querySelectorAll<HTMLElement>('[data-sum="total"]').forEach((el) => { if (f.orderTotal) el.textContent = f.orderTotal; });
+</script>

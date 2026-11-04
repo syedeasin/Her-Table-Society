@@ -1,0 +1,40 @@
+---
+/** Figma "Event Card" (Desktop / Mobile). Image h288 (mobile 262) with badge, text, perforation, price row. */
+import type { HtsEvent } from '../../data/site';
+import { ticketing } from '../../data/site';
+import { badgeFor, cardCta, categoryName, eventHref, formatPrice } from '../../lib/events';
+import Photo from '../ui/Photo.astro';
+import Badge from '../ui/Badge.astro';
+import Button from '../ui/Button.astro';
+import Perforation from '../ui/Perforation.astro';
+interface Props { event: HtsEvent; headingLevel?: 'h2' | 'h3'; class?: string }
+const { event: e, headingLevel: H = 'h3', class: cls } = Astro.props;
+const badge = badgeFor(e);
+const cta = cardCta(e);
+const href = eventHref(e);
+const price = formatPrice(e.price);
+const member = e.access === 'members-only' ? 'Members only' : e.memberPrice != null ? `Members ${formatPrice(e.memberPrice)}` : null;
+---
+<article class:list={['flex flex-col gap-5', cls]} data-event-card data-category={e.category}>
+  <a href={href} class="relative block aspect-[4/3] overflow-hidden rounded-sm bg-sand" tabindex="-1" aria-hidden="true">
+    <Photo src={e.image} alt="" sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw" widths={[400, 640, 800, 1040]} class="transition-transform duration-500 hover:scale-[1.02]" />
+    {e.status === 'sold-out' && <span class="absolute inset-0 bg-cream/40"></span>}
+    {badge && <Badge status={badge} class="absolute top-4 left-4" />}
+  </a>
+  <div class="flex flex-col gap-3 px-0.5">
+    <p class="t-label text-muted">{categoryName(e.category)}</p>
+    <H class="t-h4 text-ink"><a href={href} class="hover:underline decoration-1 underline-offset-4">{e.title}</a></H>
+    <p class="font-sans text-[16px] leading-[1.6] text-muted">{e.dateShort} · {e.area}</p>
+  </div>
+  <Perforation />
+  <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-4">
+    {price ? (
+      <p class="flex items-baseline gap-3 font-sans"><span class="text-[20px] font-medium leading-6">{price}</span>{member && <span class="text-[14px] text-muted">{member}</span>}</p>
+    ) : (
+      <p class="font-sans text-[14px] font-medium leading-5 text-ink">{ticketing.pricingSoon}</p>
+    )}
+    {cta.soldOut
+      ? <Button variant="link" size="sm" disabled class="max-md:w-full">{cta.label}</Button>
+      : <Button size="sm" href={href} class="max-md:w-full" aria-label={`${cta.label}: ${e.title}`}>{cta.label}</Button>}
+  </div>
+</article>

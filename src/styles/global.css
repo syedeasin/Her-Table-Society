@@ -1,0 +1,162 @@
+@import "tailwindcss";
+
+/* Self-hosted fonts (latin subset, from @fontsource). No third-party requests. */
+@font-face { font-family: "Jost"; font-style: normal; font-weight: 300; font-display: swap; src: url("/fonts/jost-300.woff2") format("woff2"); }
+@font-face { font-family: "Jost"; font-style: normal; font-weight: 400; font-display: swap; src: url("/fonts/jost-400.woff2") format("woff2"); }
+@font-face { font-family: "Jost"; font-style: normal; font-weight: 500; font-display: swap; src: url("/fonts/jost-500.woff2") format("woff2"); }
+@font-face { font-family: "Cormorant Garamond"; font-style: normal; font-weight: 400; font-display: swap; src: url("/fonts/cormorant-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "Cormorant Garamond"; font-style: italic; font-weight: 400; font-display: swap; src: url("/fonts/cormorant-400-italic.woff2") format("woff2"); }
+@font-face { font-family: "Cormorant Garamond"; font-style: normal; font-weight: 500; font-display: swap; src: url("/fonts/cormorant-500-normal.woff2") format("woff2"); }
+@font-face { font-family: "Cormorant Garamond"; font-style: italic; font-weight: 500; font-display: swap; src: url("/fonts/cormorant-500-italic.woff2") format("woff2"); }
+@font-face { font-family: "Cormorant Garamond"; font-style: normal; font-weight: 600; font-display: swap; src: url("/fonts/cormorant-600-normal.woff2") format("woff2"); }
+@font-face { font-family: "Cormorant Garamond"; font-style: italic; font-weight: 600; font-display: swap; src: url("/fonts/cormorant-600-italic.woff2") format("woff2"); }
+
+/*
+  HER TABLE SOCIETY · design tokens
+  Source: Figma "HER TABLE · Final Design (Website)" (file lizjxynBPTaHVuxZVZHN1C), components in section 09.
+  Mobile-first. Figma frames: Mobile 390, Desktop 1440. Fluid type scales linearly between those two widths.
+  Fluid formula: clamp(min, intercept + slope·vw, max), slope = (max − min) / 1050 · 100.
+*/
+@theme {
+  /* Breakpoints (390 base) */
+  --breakpoint-sm: 30rem;    /* 480  */
+  --breakpoint-md: 48rem;    /* 768  */
+  --breakpoint-lg: 64rem;    /* 1024 */
+  --breakpoint-xl: 80rem;    /* 1280 */
+  --breakpoint-2xl: 90rem;   /* 1440 */
+
+  /* Colors (Figma color styles) */
+  --color-ink: #1b1a18;        /* Ink: text, buttons, dark surfaces */
+  --color-muted: #5c5a55;      /* Muted: secondary text */
+  --color-cream: #fcf8ef;      /* Cream: page background, text on dark */
+  --color-sand: #f4eee1;       /* Soft sand: alternate sections, cards, button text */
+  --color-line: #e4dccb;       /* Card borders, filter bar, capacity track */
+  --color-silver: #c4c4c4;     /* Dividers, input underline, chip border */
+  --color-red: #a4161a;        /* Flag red: TABLE 01, errors, urgency */
+  --color-green: #2e5e3e;      /* Flag green: TABLE 01, success */
+  --color-error: #b3261d;      /* Form error text */
+
+  /* Fonts */
+  --font-serif: "Cormorant Garamond", "Cormorant", Georgia, "Times New Roman", serif;
+  --font-sans: "Jost", "Futura", "Helvetica Neue", Arial, sans-serif;
+
+  /* Radius / shadow */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-pill: 999px;
+  --shadow-logo: 0 5px 5px rgb(0 0 0 / 0.1);
+  --shadow-poster: 0 2px 4px rgb(27 26 24 / 0.06);
+
+  /* Layout */
+  --container: 1920px;   /* max page width; content = container − 2 × gutter */
+  --content: 1600px;     /* max content width (1920 screens) */
+}
+
+:root {
+  --gutter: 20px;                /* mobile 390 */
+  --section-gap: 72px;           /* space between home sections (mobile) */
+  --perforation: rgb(92 90 85 / 0.5);
+}
+@media (min-width: 48rem) { :root { --gutter: 40px; --section-gap: 96px; } }
+/* Desktop: content 1280 at 1440 screens (gutter 80) → 1600 at 1920 screens (gutter 160), capped at 1600 above that. */
+@media (min-width: 80rem) { :root { --gutter: clamp(64px, calc(80px + (100vw - 1440px) / 6), 160px); --section-gap: 120px; } }
+
+/* ---------- Base ---------- */
+@layer base {
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; scroll-padding-top: 88px; }
+  body {
+    background: var(--color-cream);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  h1, h2, h3, h4 { font-weight: 400; }
+  img { max-width: 100%; height: auto; }
+  ::selection { background: var(--color-ink); color: var(--color-cream); }
+  :focus-visible { outline: 2px solid var(--color-ink); outline-offset: 3px; }
+  .on-dark :focus-visible { outline-color: var(--color-cream); }
+  [hidden] { display: none !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
+
+/* ---------- Layout utilities ---------- */
+@utility container-page { width: 100%; max-width: var(--container); margin-inline: auto; padding-inline: var(--gutter); }
+@utility perforation { border-top: 1px dashed var(--perforation); }
+
+/* ---------- Typography (Figma text styles) ---------- */
+/* Eyebrow / labels: Jost 14, uppercase, 5% tracking */
+@utility t-eyebrow { font-family: var(--font-sans); font-size: 14px; line-height: 16px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--color-muted); }
+/* Card eyebrow / links: Jost 14, uppercase, 8% tracking */
+@utility t-label { font-family: var(--font-sans); font-size: 14px; line-height: normal; letter-spacing: 0.08em; text-transform: uppercase; }
+@utility t-small { font-family: var(--font-sans); font-size: 14px; line-height: 1.35; }
+@utility t-body { font-family: var(--font-sans); font-size: 16px; line-height: 1.6; }
+@utility t-lead { font-family: var(--font-sans); font-size: 18px; line-height: 1.6; }
+
+/* Display: hero 64 → 160, Cormorant italic */
+@utility t-display { font-family: var(--font-serif); font-style: italic; font-size: clamp(64px, 28.34px + 9.143vw, 160px); line-height: 0.9; letter-spacing: -0.03em; }
+/* H1 page: 48 → 96 */
+@utility t-h1 { font-family: var(--font-serif); font-style: italic; font-size: clamp(48px, 30.17px + 4.571vw, 96px); line-height: 1; letter-spacing: -0.03em; }
+/* H1 event detail: 48 → 88 */
+@utility t-h1-detail { font-family: var(--font-serif); font-style: italic; font-size: clamp(48px, 33.14px + 3.81vw, 88px); line-height: 1; letter-spacing: -0.03em; }
+/* H1 membership: 56 → 104 */
+@utility t-h1-xl { font-family: var(--font-serif); font-style: italic; font-size: clamp(56px, 38.17px + 4.571vw, 104px); line-height: 0.95; letter-spacing: -0.03em; }
+/* Confirmation title: 48 → 80 */
+@utility t-h1-confirm { font-family: var(--font-serif); font-style: italic; font-size: clamp(48px, 36.11px + 3.048vw, 80px); line-height: 1; letter-spacing: -0.03em; }
+/* H2 section: 40 → 64 */
+@utility t-h2 { font-family: var(--font-serif); font-style: italic; font-size: clamp(40px, 31.09px + 2.286vw, 64px); line-height: 1.05; letter-spacing: -0.03em; }
+@media (min-width: 80rem) { .t-h2 { line-height: 1; } }
+/* Flow page title (checkout / join): 40 → 56 */
+@utility t-h2-flow { font-family: var(--font-serif); font-style: italic; font-size: clamp(40px, 34.06px + 1.524vw, 56px); line-height: 1; letter-spacing: -0.03em; }
+/* Section sub-title (list heads, upsell): 36 → 56 */
+@utility t-h3-italic { font-family: var(--font-serif); font-style: italic; font-size: clamp(36px, 28.57px + 1.905vw, 56px); line-height: 1; letter-spacing: -0.03em; }
+/* H3 roman: option title 32 → 48 */
+@utility t-h3 { font-family: var(--font-serif); font-size: clamp(32px, 26.06px + 1.524vw, 48px); line-height: 1; letter-spacing: -0.03em; }
+/* Card title: 28 → 32 */
+@utility t-h4 { font-family: var(--font-serif); font-size: clamp(28px, 26.51px + 0.381vw, 32px); line-height: 1.05; letter-spacing: -0.03em; }
+/* H5: 20 → 24 */
+@utility t-h5 { font-family: var(--font-serif); font-size: clamp(20px, 18.51px + 0.381vw, 24px); line-height: 1.2; letter-spacing: -0.02em; }
+
+/* Marquee */
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@utility animate-marquee { animation: marquee 50s linear infinite; }
+
+/* Scalloped arch mask (Figma "IMG-02 — Society arch") */
+@utility mask-arch {
+  -webkit-mask-image: url("/masks/arch.svg");
+  mask-image: url("/masks/arch.svg");
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+/* Hide scrollbars on horizontal scrollers (chips, swipe rows) but keep them scrollable */
+@utility no-scrollbar { scrollbar-width: none; &::-webkit-scrollbar { display: none; } }
+
+/* Digits inside Cormorant values are set in Jost Medium at ~84% (Figma "mixed numerals" pattern) */
+@utility num { font-family: var(--font-sans); font-style: normal; font-weight: 500; font-size: 0.84em; letter-spacing: 0; }
+
+/* Button label: Jost 14/16 uppercase 5% */
+@utility t-button { font-family: var(--font-sans); font-size: 14px; line-height: 16px; letter-spacing: 0.05em; text-transform: uppercase; }
+/* Text link (arrows): Jost 14 uppercase 8% */
+@utility t-link { font-family: var(--font-sans); font-size: 14px; line-height: 20px; letter-spacing: 0.08em; text-transform: uppercase; text-underline-offset: 5px; &:hover { text-decoration: underline; } }
+
+/* Skip link */
+@utility skip-link {
+  position: absolute; left: -9999px; top: 0;
+  &:focus { left: 16px; top: 16px; z-index: 100; background: var(--color-ink); color: var(--color-cream); padding: 12px 20px; }
+}
+
+/* Container-query hero (positions authored in Figma px, scaled with cqw) */
+@utility cq { container-type: inline-size; }
+
+/* Stripe hand-off loader */
+@keyframes dot { 0%, 100% { opacity: .25; } 50% { opacity: 1; } }
+@utility loader-dot { animation: dot 1.2s ease-in-out infinite; }

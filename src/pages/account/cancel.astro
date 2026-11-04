@@ -1,0 +1,21 @@
+---
+/** Figma 07.5 · Cancel renewal. */
+import AccountLayout from '../../layouts/AccountLayout.astro';
+import Button from '../../components/ui/Button.astro';
+const lose = ['Early access to tickets before public release', 'Member ticket pricing', 'Members-only experiences'];
+---
+<AccountLayout title="Cancel renewal" active="membership">
+  <a href="/account" class="t-link w-max text-muted hover:text-ink">←  Membership</a>
+  <section class="flex flex-col gap-5 border border-line bg-sand px-5 py-6 md:p-8" aria-labelledby="cancel-title">
+    <h2 id="cancel-title" class="font-serif text-[36px] italic leading-none tracking-[-0.03em] text-ink md:text-[48px]">Cancel automatic renewal?</h2>
+    <p class="font-sans text-[18px] leading-[1.6] text-muted">Your membership stays active until May 22, 2027. After that you won’t be charged and your membership ends. You can rejoin later if a spot is available (membership is limited to 2,000).</p>
+    <div class="flex flex-col gap-2">
+      <p class="t-eyebrow">After May 22, 2027 you’ll lose</p>
+      <ul class="flex flex-col gap-1 font-sans text-[16px] leading-[1.6] text-ink">{lose.map((l) => <li class="flex gap-3"><span aria-hidden="true">—</span>{l}</li>)}</ul>
+    </div>
+    <div class="flex flex-col gap-4 md:flex-row md:items-center md:gap-8">
+      <Button href="/account" class="max-md:w-full">Keep my membership</Button>
+      <a href="/account?renewal=off" class="t-link text-ink">Yes, cancel renewal</a>
+    </div>
+  </section>
+</AccountLayout>

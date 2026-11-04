@@ -1,0 +1,13 @@
+---
+/** Figma 01 · The calendar: four categories (swipe row on mobile). */
+import { home, categories } from '../../data/site';
+import ExperienceCard from '../blocks/ExperienceCard.astro';
+import SectionHead from '../blocks/SectionHead.astro';
+const c = home.calendar;
+---
+<section aria-label={c.title} class="mx-auto flex max-w-[var(--container)] flex-col gap-10 md:gap-16 md:px-[var(--gutter)]">
+  <SectionHead eyebrow={c.eyebrow} title={c.title} intro={c.intro} align="center" class="px-5 md:px-0" />
+  <ul class="no-scrollbar flex snap-x snap-mandatory scroll-px-5 gap-4 overflow-x-auto px-5 md:grid md:grid-cols-2 md:gap-6 md:overflow-visible md:px-0 lg:grid-cols-4">
+    {categories.map((cat) => <ExperienceCard title={cat.name} body={cat.body} image={cat.image} href={`/events?category=${cat.slug}`} />)}
+  </ul>
+</section>

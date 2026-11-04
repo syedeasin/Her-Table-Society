@@ -1,0 +1,132 @@
+---
+/**
+ * Figma "Ticket Panel" (w440, cream, border #E4DCCB, p32 gap24). Six states:
+ * public-sale · early-access · sold-out · members-only · date-soon · pricing-soon.
+ * The state comes from the event data (lib/events.ts → panelState) unless `state` is passed (styleguide).
+ * `demoPrice` shows "$XX" example prices for the styleguide only; the live site never shows example prices.
+ */
+import type { HtsEvent } from '../../data/site';
+import { ticketing } from '../../data/site';
+import { badgeFor, formatPrice, panelState, type PanelState } from '../../lib/events';
+import Badge from '../ui/Badge.astro';
+import Button from '../ui/Button.astro';
+import TextLink from '../ui/TextLink.astro';
+import Perforation from '../ui/Perforation.astro';
+import NotifyForm from './NotifyForm.astro';
+interface Props { event: HtsEvent; state?: PanelState; showBadge?: boolean; demoPrice?: boolean; class?: string }
+const { event: e, state = panelState(e), showBadge = true, demoPrice = false, class: cls } = Astro.props;
+
+const price = demoPrice ? '$XX' : formatPrice(e.price);
+const memberPrice = demoPrice ? '$XX' : formatPrice(e.memberPrice);
+const badge = state === 'public-sale' ? (e.status === 'few-left' ? 'few-left' : 'available') : state === 'pricing-soon' ? null : badgeFor(e);
+const hasMemberPerk = e.access !== 'public' || demoPrice;
+
+const copy: Record<PanelState, { label: string; sub?: string | null; msgTitle?: string; msgBody?: string }> = {
+  'public-sale': { label: 'Public ticket', sub: hasMemberPerk && memberPrice ? `Members ${memberPrice}` : null },
+  'early-access': { label: 'Public ticket', sub: memberPrice ? `Members ${memberPrice}` : ticketing.pricingSoon, msgTitle: 'Members are booking now.', msgBody: `Public sale opens ${e.publicSaleOpens ?? 'soon'}. Any seats left after the early window open to everyone then.` },
+  'sold-out': { label: 'Public ticket', sub: memberPrice ? `Members ${memberPrice}` : null, msgTitle: 'This event is sold out.', msgBody: 'Sales closed automatically when every seat was taken.' },
+  'members-only': { label: 'Member ticket', sub: 'Open to HER TABLE members only', msgTitle: 'A members-only experience.', msgBody: 'Become a member to book this and every members-only table.' },
+  'date-soon': { label: 'Ticket price', sub: ticketing.pricingSoon, msgTitle: 'Date announced soon.', msgBody: 'Date, venue and tickets coming soon. Leave your email to hear first.' },
+  'pricing-soon': { label: 'Tickets and pricing', sub: null, msgTitle: 'Tickets and pricing announced soon.', msgBody: 'Leave your email and we’ll let you know the moment tickets open.' },
+};
+const c = copy[state];
+const comingSoon = state === 'date-soon' || state === 'pricing-soon' || !price;
+const showPrice = !(state === 'sold-out' && !price);
+const showCapacity = e.capacity != null && e.seatsLeft != null && state !== 'date-soon' && state !== 'pricing-soon';
+const soldPct = showCapacity ? Math.round(((e.capacity! - e.seatsLeft!) / e.capacity!) * 100) : 0;
+const checkoutHref = `/checkout?event=${e.slug}&qty=1`;
+const exploreLink = { href: '/events', label: 'Explore other events  →' };
+---
+<aside
+  class:list={['flex w-full flex-col gap-6 border border-line bg-cream p-6 md:p-8', cls]}
+  aria-label="Tickets"
+  data-ticket-panel
+  data-price={e.price ?? ''}
+  data-slug={e.slug}
+  data-max={ticketing.maxPerOrder}
+>
+  {showBadge && badge && <Badge status={badge} />}
+
+  {showPrice && (
+    <div class="flex flex-col gap-1">
+      <p class="font-sans text-[14px] leading-5 text-muted">{c.label}</p>
+      {comingSoon
+        ? <p class="font-serif text-[48px] leading-none tracking-[-0.03em] text-ink md:text-[64px]">Coming soon</p>
+        : <p class:list={['font-sans text-[44px] font-medium leading-none tracking-[-0.03em] md:text-[52px]', state === 'sold-out' ? 'text-muted' : 'text-ink']}>{price}</p>}
+      {c.sub && <p class="font-sans text-[16px] leading-[1.6] text-muted">{c.sub}</p>}
+    </div>
+  )}
+
+  {c.msgTitle && (
+    <div class="flex flex-col gap-1.5 bg-sand p-4">
+      <p class="font-serif text-[24px] leading-[1.15] tracking-[-0.02em] text-ink">{c.msgTitle}</p>
+      <p class="font-sans text-[16px] leading-[1.6] text-muted md:text-[18px]">{c.msgBody}</p>
+    </div>
+  )}
+
+  {showCapacity && (
+    <div class="flex flex-col gap-2">
+      <p class:list={['font-sans text-[14px] leading-5', e.seatsLeft === 0 ? 'text-red' : 'text-muted']}>{e.seatsLeft} of {e.capacity} seats left</p>
+      <div class="h-1 w-full bg-line" role="progressbar" aria-label="Seats sold" aria-valuemin="0" aria-valuemax="100" aria-valuenow={soldPct}>
+        <div class="h-full bg-ink" style={`width:${soldPct}%`}></div>
+      </div>
+    </div>
+  )}
+
+  {state === 'public-sale' && (
+    <>
+      <Perforation />
+      <div class="flex items-center justify-between gap-4">
+        <div class="flex flex-col">
+          <label for={`qty-${e.slug}`} class="font-sans text-[14px] leading-5 text-ink">Tickets</label>
+          <span class="font-sans text-[14px] leading-5 text-muted">Max {ticketing.maxPerOrder} per order</span>
+        </div>
+        <div class="flex border border-muted font-sans text-[18px] text-ink">
+          <button type="button" class="grid size-11 place-items-center disabled:text-silver" aria-label="Fewer tickets" data-qty-minus disabled>−</button>
+          <input id={`qty-${e.slug}`} type="text" inputmode="numeric" value="1" readonly aria-live="polite" class="size-11 border-x border-muted bg-transparent text-center focus:outline-none" data-qty />
+          <button type="button" class="grid size-11 place-items-center disabled:text-silver" aria-label="More tickets" data-qty-plus>+</button>
+        </div>
+      </div>
+      <div class="flex items-center justify-between">
+        <span class="font-sans text-[14px] leading-5 text-ink">Total</span>
+        <span class="font-sans text-[26px] font-medium leading-none" data-total>{price}</span>
+      </div>
+    </>
+  )}
+
+  {(state === 'date-soon' || state === 'pricing-soon') && <NotifyForm source={`event-${e.slug}`} id={`notify-${e.slug}`} />}
+
+  <div class="flex flex-col items-center gap-4 text-center">
+    {state === 'public-sale' && <Button href={demoPrice ? '/checkout' : checkoutHref} full data-buy>Buy ticket</Button>}
+    {(state === 'early-access' || state === 'members-only') && <Button href="/membership" full>Become a Member</Button>}
+    {state === 'sold-out' && <Button variant="link" full disabled>Sold out</Button>}
+
+    {state === 'public-sale' && hasMemberPerk && <TextLink href="/account/login">Member? Log in for member pricing  →</TextLink>}
+    {(state === 'early-access' || state === 'members-only') && <TextLink href="/account/login">Member? Log in to book  →</TextLink>}
+    {(state === 'sold-out' || state === 'date-soon' || state === 'pricing-soon') && <TextLink href={exploreLink.href}>{exploreLink.label}</TextLink>}
+    <p class="font-sans text-[14px] leading-5 text-muted">{ticketing.note}</p>
+  </div>
+</aside>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-ticket-panel]').forEach((panel) => {
+    const qty = panel.querySelector<HTMLInputElement>('[data-qty]');
+    if (!qty) return;
+    const minus = panel.querySelector<HTMLButtonElement>('[data-qty-minus]')!;
+    const plus = panel.querySelector<HTMLButtonElement>('[data-qty-plus]')!;
+    const total = panel.querySelector<HTMLElement>('[data-total]');
+    const buy = panel.querySelector<HTMLAnchorElement>('[data-buy]');
+    const price = Number(panel.dataset.price);
+    const max = Number(panel.dataset.max) || 4;
+    const set = (n: number) => {
+      n = Math.min(max, Math.max(1, n));
+      qty.value = String(n);
+      minus.disabled = n <= 1;
+      plus.disabled = n >= max;
+      if (total && price) total.textContent = `$${(price * n).toLocaleString('en-US')}`;
+      if (buy) { const u = new URL(buy.href, location.href); u.searchParams.set('qty', String(n)); buy.href = u.pathname + u.search; }
+    };
+    minus.addEventListener('click', () => set(Number(qty.value) - 1));
+    plus.addEventListener('click', () => set(Number(qty.value) + 1));
+  });
+</script>

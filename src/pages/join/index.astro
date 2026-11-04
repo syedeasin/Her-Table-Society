@@ -1,0 +1,37 @@
+---
+/** Figma 06.1 · Join 1 · Select plan. */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { plans, membership } from '../../data/site';
+import JoinStepper from '../../components/blocks/JoinStepper.astro';
+import PlanCard from '../../components/blocks/PlanCard.astro';
+import Button from '../../components/ui/Button.astro';
+---
+<BaseLayout title="Join · Select plan" header="checkout" backHref="/membership" noindex>
+  <form class="mx-auto flex max-w-[var(--container)] flex-col gap-8 px-[var(--gutter)] pt-8 pb-[72px] md:gap-12 md:pt-14 md:pb-[120px]" action="/join/details" method="get" data-plan-form>
+    <JoinStepper step={1} />
+    <div class="flex flex-col gap-3">
+      <h1 class="t-h2-flow text-ink">{membership.plansTitle}</h1>
+      <p class="font-sans text-[18px] leading-[1.6] text-muted">{membership.plansNote}</p>
+    </div>
+    <fieldset class="grid gap-4 md:grid-cols-3 md:gap-6">
+      <legend class="sr-only">Choose a plan</legend>
+      {plans.map((p) => <PlanCard plan={p} name="plan" selected={p.id === '6-months'} />)}
+    </fieldset>
+    <div class="flex flex-col gap-4 md:flex-row md:items-center md:gap-8">
+      <Button type="submit" class="max-md:w-full">Continue</Button>
+      <a href="/membership" class="t-link text-ink">←  Back to membership</a>
+    </div>
+    <p class="font-sans text-[14px] leading-5 text-muted">The 3-month introductory plan is for first-time members and can be used once per person.</p>
+  </form>
+</BaseLayout>
+<script>
+  import { saveFlow, readFlow } from '../../lib/flow';
+  const form = document.querySelector<HTMLFormElement>('[data-plan-form]')!;
+  const want = new URL(location.href).searchParams.get('plan') ?? readFlow().plan;
+  const radio = form.querySelector<HTMLInputElement>(`input[name="plan"][value="${want}"]`);
+  if (radio) radio.checked = true;
+  form.addEventListener('submit', () => {
+    const v = form.querySelector<HTMLInputElement>('input[name="plan"]:checked')?.value;
+    if (v) saveFlow({ plan: v });
+  });
+</script>

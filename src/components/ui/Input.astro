@@ -1,0 +1,19 @@
+---
+/** Figma "Input field": label Jost 14 ink, 40px field with a 1px silver underline, value 16/1.6. Error text 12 #B3261D. */
+interface Props {
+  label: string; name: string; type?: 'text' | 'email' | 'tel' | 'password' | 'number' | 'search'; id?: string; value?: string; placeholder?: string;
+  autocomplete?: string; required?: boolean; error?: string; class?: string; [key: string]: unknown;
+}
+const { label, name, type = 'text', id = name, value, placeholder, autocomplete, required = false, error, class: cls, ...rest } = Astro.props;
+const errId = `${id}-error`;
+---
+<div class:list={['flex flex-col gap-2', cls]} data-field>
+  <label for={id} class="font-sans text-[14px] leading-5 text-ink">{label}</label>
+  <input
+    id={id} name={name} type={type} value={value} placeholder={placeholder} autocomplete={autocomplete} required={required}
+    aria-describedby={errId}
+    class="h-10 w-full border-0 border-b border-silver bg-transparent px-0 font-sans text-[16px] leading-[1.6] text-ink placeholder:text-muted focus:border-ink focus:outline-none focus-visible:outline-none aria-invalid:border-error"
+    {...rest}
+  />
+  <p id={errId} class:list={['font-sans text-[12px] leading-4 text-error', !error && 'hidden']} data-field-error>{error}</p>
+</div>

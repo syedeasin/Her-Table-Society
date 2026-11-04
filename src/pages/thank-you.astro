@@ -1,0 +1,17 @@
+---
+/** Generic thank-you page for forms submitted without JavaScript (the lead function redirects here). */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/ui/Icon.astro';
+import Button from '../components/ui/Button.astro';
+---
+<BaseLayout title="Thank you" noindex>
+  <section class="mx-auto flex max-w-[calc(720px+2*var(--gutter))] flex-col items-start gap-8 px-[var(--gutter)] py-[72px] md:py-[120px]">
+    <Icon name="success" />
+    <div class="flex flex-col gap-3">
+      <p class="t-eyebrow">You’re on the list</p>
+      <h1 class="t-h1-confirm text-ink">Thank you.</h1>
+      <p class="font-sans text-[18px] leading-[1.6] text-muted">We’ll email you as soon as there’s news. In the meantime, take a look at what’s coming up.</p>
+    </div>
+    <Button href="/events" class="max-md:w-full">Explore Events</Button>
+  </section>
+</BaseLayout>

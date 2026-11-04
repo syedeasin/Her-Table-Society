@@ -1,0 +1,22 @@
+---
+/** Figma "Account Nav": vertical list on desktop (active = sand + ink rule), horizontal tabs on mobile. */
+interface Props { active: 'membership' | 'tickets' | 'payment' | 'details' }
+const { active } = Astro.props;
+const items = [
+  { id: 'membership', label: 'Membership', href: '/account' },
+  { id: 'tickets', label: 'My tickets', href: '/account/tickets' },
+  { id: 'payment', label: 'Payment', href: '/account/update-card' },
+  { id: 'details', label: 'Account details', href: '/account/details' },
+];
+---
+<nav aria-label="Account" class="lg:w-[260px] lg:shrink-0">
+  <ul class="no-scrollbar -mx-[var(--gutter)] flex gap-6 overflow-x-auto border-b border-line px-[var(--gutter)] lg:mx-0 lg:flex-col lg:gap-0 lg:border-0 lg:px-0">
+    {items.map((i) => (
+      <li class="shrink-0">
+        <a href={i.href} aria-current={active === i.id ? 'page' : undefined}
+          class="t-link block border-b border-transparent pt-4 pb-3.5 text-muted hover:text-ink hover:no-underline aria-[current=page]:border-ink aria-[current=page]:text-ink lg:border-b-0 lg:border-l-2 lg:px-4 lg:py-3.5 lg:aria-[current=page]:bg-sand">{i.label}</a>
+      </li>
+    ))}
+    <li class="hidden lg:block"><a href="/account/login" class="t-link block border-l-2 border-transparent px-4 py-3.5 text-muted hover:text-ink hover:no-underline">Log out</a></li>
+  </ul>
+</nav>

@@ -1,0 +1,16 @@
+---
+/** Figma "Experience card" (home calendar): image h460 r4, title Cormorant 32, body 18 muted. */
+import type { ImageKey } from '../../data/images';
+import Photo from '../ui/Photo.astro';
+interface Props { title: string; body: string; image: ImageKey; href: string }
+const { title, body, image, href } = Astro.props;
+---
+<li class="flex w-[280px] shrink-0 snap-start flex-col gap-5 md:w-auto">
+  <a href={href} class="block h-[460px] overflow-hidden lg:aspect-[282/460] lg:h-auto rounded-sm bg-sand" tabindex="-1" aria-hidden="true">
+    <Photo src={image} alt="" sizes="(min-width: 1024px) 25vw, 280px" widths={[320, 560, 720, 800]} class="transition-transform duration-500 hover:scale-[1.02]" />
+  </a>
+  <div class="flex flex-col gap-2">
+    <h3 class="font-serif text-[32px] leading-[1.05] tracking-[-0.03em] text-ink"><a href={href} class="hover:underline decoration-1 underline-offset-4">{title}</a></h3>
+    <p class="font-sans text-[18px] leading-[1.6] text-muted">{body}</p>
+  </div>
+</li>

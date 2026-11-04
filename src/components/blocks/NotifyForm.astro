@@ -1,0 +1,20 @@
+---
+/** Email + "Notify me" form. Posts to /api/lead (Cloudflare Pages Function). */
+import Input from '../ui/Input.astro';
+import Button from '../ui/Button.astro';
+interface Props { source: string; layout?: 'stack' | 'row'; buttonLabel?: string; success?: string; id?: string }
+const { source, layout = 'stack', buttonLabel = 'Notify me', success = 'Thank you. We’ll email you first.', id = `notify-${source}` } = Astro.props;
+---
+<form action="/api/lead" method="post" novalidate data-lead-form data-success={success} class="flex flex-col gap-3">
+  <div class:list={['flex gap-4', layout === 'row' ? 'flex-col md:flex-row md:items-end' : 'flex-col']}>
+    <Input label="Email" name="email" id={`${id}-email`} type="email" placeholder="you@example.com" autocomplete="email" required class="flex-1" />
+    <input type="hidden" name="topic" value={source} />
+    <div class="hidden" aria-hidden="true"><label>Company <input type="text" name="company" tabindex="-1" autocomplete="off" /></label></div>
+    <Button type="submit" size={layout === 'row' ? 'lg' : 'sm'} full={layout !== 'row'} class={layout === 'row' ? 'max-md:w-full' : ''}>{buttonLabel}</Button>
+  </div>
+  <p data-status role="status" aria-live="polite" class="font-sans text-[14px] leading-5 empty:hidden"></p>
+</form>
+<script>
+  import { initLeadForms } from '../../lib/forms';
+  initLeadForms();
+</script>

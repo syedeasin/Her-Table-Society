@@ -1,0 +1,14 @@
+---
+/** Payment tab. Card updates happen on Stripe (customer portal); no Figma frame beyond the Payment card. */
+import AccountLayout from '../../layouts/AccountLayout.astro';
+import PaymentCard from '../../components/blocks/PaymentCard.astro';
+import Alert from '../../components/ui/Alert.astro';
+import Button from '../../components/ui/Button.astro';
+---
+<AccountLayout title="Payment" active="payment">
+  <h2 class="font-serif text-[36px] italic leading-[1.2] tracking-[-0.03em] text-ink md:text-[40px]">Payment</h2>
+  <PaymentCard />
+  <Alert type="info" title="You’ll update your card on Stripe.">Secure checkout by Stripe. You’ll come back to HER TABLE when it’s done.</Alert>
+  <!-- Backend: link to a Stripe customer portal session. -->
+  <Button href="/account" class="max-md:w-full">Continue to Stripe</Button>
+</AccountLayout>

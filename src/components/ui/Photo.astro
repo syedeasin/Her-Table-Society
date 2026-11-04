@@ -1,0 +1,17 @@
+---
+/** Responsive photo from the image registry. Converted to WebP at build time. */
+import { Image } from 'astro:assets';
+import { images, type ImageKey } from '../../data/images';
+interface Props {
+  src: ImageKey; alt: string; class?: string; sizes?: string; widths?: number[];
+  loading?: 'lazy' | 'eager'; fetchpriority?: 'high' | 'low' | 'auto'; fit?: 'cover' | 'contain';
+}
+const { src, alt, class: cls, sizes = '100vw', widths = [400, 640, 960, 1280, 1600, 2000], loading = 'lazy', fetchpriority, fit = 'cover' } = Astro.props;
+const img = images[src];
+const w = widths.filter((x) => x <= img.width);
+if (!w.length) w.push(img.width);
+---
+<Image
+  src={img} alt={alt} widths={w} sizes={sizes} loading={loading} fetchpriority={fetchpriority} decoding="async" format="webp" quality={80}
+  class:list={['h-full w-full', fit === 'cover' ? 'object-cover' : 'object-contain', cls]}
+/>

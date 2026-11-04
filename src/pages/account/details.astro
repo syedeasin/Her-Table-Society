@@ -1,0 +1,19 @@
+---
+/** Account details tab (no dedicated Figma frame; built from the Account card and Info Field components). */
+import AccountLayout from '../../layouts/AccountLayout.astro';
+import AccountCard from '../../components/blocks/AccountCard.astro';
+import InfoField from '../../components/ui/InfoField.astro';
+import { demoMember as m } from '../../data/site';
+---
+<AccountLayout title="Account details" active="details">
+  <h2 class="font-serif text-[36px] italic leading-[1.2] tracking-[-0.03em] text-ink md:text-[40px]">Account details</h2>
+  <AccountCard eyebrow="Your details">
+    <dl class="grid gap-4 md:grid-cols-2 md:gap-x-8 md:gap-y-5">
+      <InfoField label="Name" value={`${m.firstName} ${m.lastName}`} />
+      <InfoField label="Email" value={m.email} />
+      <InfoField label="Phone" value={m.phone} />
+      <InfoField label="Log in with" value="Email and password" />
+    </dl>
+    <a href="mailto:hello@hertablesociety.com?subject=Update%20my%20details" class="t-link w-max text-ink">Update details  →</a>
+  </AccountCard>
+</AccountLayout>

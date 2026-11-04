@@ -1,0 +1,52 @@
+---
+/** Figma 06.2 · Join 2 · Your details. */
+import FlowLayout from '../../layouts/FlowLayout.astro';
+import Input from '../../components/ui/Input.astro';
+import Button from '../../components/ui/Button.astro';
+import ChoiceTile from '../../components/blocks/ChoiceTile.astro';
+import MembershipSummary from '../../components/blocks/MembershipSummary.astro';
+---
+<FlowLayout title="Join · Your details" backHref="/join" step={2} heading="Your details" intro="We’ll use these to set up your membership and send your confirmation.">
+  <form class="flex flex-col gap-8" novalidate action="/join/confirm-age" data-join-form>
+    <div class="grid gap-8 md:grid-cols-2 md:gap-6">
+      <Input label="First name" name="firstName" autocomplete="given-name" required placeholder="Jessica" />
+      <Input label="Last name" name="lastName" autocomplete="family-name" required placeholder="Doe" />
+    </div>
+    <Input label="Email" name="email" type="email" autocomplete="email" required placeholder="jessica@example.com" />
+    <Input label="Phone" name="phone" type="tel" autocomplete="tel" placeholder="(310) 555-0123" />
+    <fieldset class="flex flex-col gap-3">
+      <legend class="mb-3 font-sans text-[14px] leading-5 text-ink">How would you like to log in?</legend>
+      <div class="flex flex-col gap-3 md:flex-row md:gap-4">
+        <ChoiceTile name="signin" value="password" title="Create a password" body="Log in with email and password." checked />
+        <ChoiceTile name="signin" value="link" title="Email me a login link" body="No password. We send a link each time." />
+      </div>
+    </fieldset>
+    <div data-password><Input label="Password" name="password" type="password" autocomplete="new-password" required placeholder="At least 8 characters" /></div>
+    <div class="flex flex-col gap-4 md:flex-row md:items-center md:gap-8">
+      <Button type="submit" class="max-md:w-full">Continue</Button>
+      <a href="/account/login" class="t-link text-ink">Already a member? Log in</a>
+    </div>
+  </form>
+  <MembershipSummary slot="aside" />
+</FlowLayout>
+<script>
+  import { validate } from '../../lib/forms';
+  import { formToFlow, readFlow, restoreForm, saveFlow } from '../../lib/flow';
+  import { getPlan, renderPlan } from '../../lib/plans';
+  const plan = new URL(location.href).searchParams.get('plan');
+  if (plan) saveFlow({ plan });
+  renderPlan(getPlan(readFlow().plan));
+  const form = document.querySelector<HTMLFormElement>('[data-join-form]')!;
+  restoreForm(form);
+  const pw = form.querySelector<HTMLElement>('[data-password]')!;
+  const pwInput = pw.querySelector('input')!;
+  const sync = () => { const link = form.querySelector<HTMLInputElement>('input[value="link"]')!.checked; pw.hidden = link; pwInput.required = !link; };
+  form.querySelectorAll('input[name="signin"]').forEach((r) => r.addEventListener('change', sync));
+  sync();
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!validate(form)) return;
+    saveFlow(formToFlow(form));
+    location.href = form.action;
+  });
+</script>

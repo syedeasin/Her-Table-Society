@@ -1,0 +1,10 @@
+---
+/** Figma "Change Summary" (switch plan). */
+import Mixed from '../ui/Mixed.astro';
+interface Props { from: string; text: string }
+const { from, text } = Astro.props;
+---
+<div class="flex flex-col gap-1.5 bg-sand p-5" aria-live="polite">
+  <p class="font-sans text-[14px] leading-5 text-muted">{from}</p>
+  <p class="font-serif text-[24px] italic leading-[1.2] tracking-[-0.02em] text-ink" data-change-text><Mixed text={text} /></p>
+</div>
