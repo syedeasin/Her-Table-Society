@@ -10,10 +10,25 @@ interface Props {
   type: 'ticket' | 'membership';
   title: string; detail: string; image: ImageKey;
   lines: Line[]; total: string; notes: string[]; strongNote?: string; class?: string;
+  /** Mobile collapsed bar text (Figma "Order Summary · Collapsed"). */
+  barLine?: string;
 }
-const { type, title, detail, image, lines, total, notes, strongNote, class: cls } = Astro.props;
+const { type, title, detail, image, lines, total, notes, strongNote, class: cls, barLine } = Astro.props;
+const panelId = `summary-${type}`;
 ---
-<aside class:list={['flex w-full flex-col gap-6 bg-sand p-6 md:p-8', cls]} aria-label="Order summary" data-order-summary={type}>
+<div class="w-full" data-summary-root>
+{barLine && (
+  <button type="button" class="flex w-full items-center justify-between gap-3 bg-sand px-4 py-3.5 text-left lg:hidden" aria-expanded="false" aria-controls={panelId} data-summary-toggle>
+    <span class="flex flex-col gap-0.5">
+      <span class="flex items-center gap-1.5 font-sans text-[14px] leading-5 text-ink">Order summary
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" class="transition-transform [[aria-expanded=true]_&]:rotate-180"><path d="M3 4.5L6 7.5L9 4.5" stroke="#5C5A55" stroke-linecap="round" stroke-linejoin="round" /></svg>
+      </span>
+      <span class="font-sans text-[14px] leading-5 text-muted" data-sum="bar">{barLine}</span>
+    </span>
+    <span class="font-sans text-[22px] font-medium leading-none text-ink" data-sum="total">{total}</span>
+  </button>
+)}
+<aside id={panelId} class:list={['w-full flex-col gap-6 bg-sand p-6 md:p-8', barLine ? 'hidden lg:flex' : 'flex', cls]} aria-label="Order summary" data-order-summary={type}>
   <p class="font-sans text-[14px] leading-5 tracking-[0.08em] uppercase text-muted">Order summary</p>
   <div class="flex items-center gap-4">
     <div class="size-[72px] shrink-0 overflow-hidden rounded-sm bg-line"><Photo src={image} alt="" sizes="72px" widths={[144]} /></div>
@@ -37,3 +52,16 @@ const { type, title, detail, image, lines, total, notes, strongNote, class: cls 
   {strongNote && <p class="font-sans text-[14px] font-medium leading-[1.4] text-muted">{strongNote}</p>}
   {notes.map((n, i) => <p class="font-sans text-[14px] leading-[1.4] text-muted" data-sum={i === 0 ? 'note' : undefined}>{n}</p>)}
 </aside>
+</div>
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-summary-toggle]').forEach((btn) => {
+    const panel = document.getElementById(btn.getAttribute('aria-controls')!);
+    btn.addEventListener('click', () => {
+      const open = btn.getAttribute('aria-expanded') !== 'true';
+      btn.setAttribute('aria-expanded', String(open));
+      panel?.classList.toggle('hidden', !open);
+      panel?.classList.toggle('flex', open);
+      panel?.classList.toggle('mt-2', open);
+    });
+  });
+</script>

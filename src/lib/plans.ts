@@ -33,6 +33,7 @@ export function renderPlan(p: PlanInfo) {
   set('[data-sum="total"]', t.price);
   set('[data-sum="note"]', t.note);
   set('[data-sum="line"]', t.line);
+  set('[data-sum="bar"]', `Membership only · ${p.months} months`);
   set('[data-plan="review"]', t.review);
   set('[data-plan="name"]', t.name);
   set('[data-plan="renew"]', t.renewDate);

@@ -25,9 +25,10 @@ const variants = {
   nav: 'bg-ink text-cream hover:bg-[#2e2d2d] items-center px-5 py-4',
 };
 const disabledCls = disabled ? 'pointer-events-none cursor-not-allowed' : '';
-const linkPad = size === 'lg' ? 'px-6 py-5' : 'px-5 py-4';
-const textPad = size === 'lg' ? 'px-6 py-5' : 'px-6 py-4';
-const iconPad = size === 'lg' ? 'p-5' : 'p-4';
+// LG renders as Sm below 768 (Figma mobile frames use Sm everywhere).
+const linkPad = size === 'lg' ? 'px-5 py-4 md:px-6 md:py-5' : 'px-5 py-4';
+const textPad = size === 'lg' ? 'px-6 py-4 md:py-5' : 'px-6 py-4';
+const iconPad = size === 'lg' ? 'p-4 md:p-5' : 'p-4';
 const attrs = Tag === 'a' ? { href } : { type, disabled };
 ---
 <Tag class:list={[base, width, variants[variant], variant === 'link' && linkPad, variant === 'link' && 'text-center', disabledCls, cls]} {...attrs} {...rest}>

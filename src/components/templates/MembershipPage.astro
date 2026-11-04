@@ -29,13 +29,13 @@ const faqLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity
         ? <Button href="#notify" class="max-md:w-full">Notify me when a spot opens</Button>
         : <Button href="#plans" class="max-md:w-full">See the plans</Button>}
     </div>
-    <div class="mask-arch aspect-[480/588] w-full max-w-[600px] shrink-0 md:w-[40%]">
+    <div class="mask-arch aspect-[480/588] w-full max-w-[600px] shrink-0 max-md:order-first md:w-[40%]">
       <Photo src="optionMembership" alt="Members laughing together at a candlelit dinner" sizes="(min-width: 768px) 40vw, 100vw" widths={[400, 600, 960, 1200]} loading="eager" />
     </div>
   </section>
 
   <section aria-labelledby="benefits-title" class="bg-sand px-[var(--gutter)] py-[72px] md:py-[120px]">
-    <div class="mx-auto flex max-w-[var(--content)] flex-col-reverse gap-10 md:flex-row md:items-center md:gap-12 xl:gap-24">
+    <div class="mx-auto flex max-w-[var(--content)] flex-col gap-10 md:flex-row md:items-center md:gap-12 xl:gap-24">
       <div class="mask-arch aspect-[480/588] w-full max-w-[600px] shrink-0 md:w-[40%]">
         <Photo src="catDinner" alt="A long dinner table of women in conversation" sizes="(min-width: 768px) 40vw, 100vw" widths={[400, 600, 960, 1200]} />
       </div>
@@ -63,20 +63,20 @@ const faqLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity
     </div>
     <fieldset class="grid gap-4 md:grid-cols-3 md:gap-6" disabled={full} data-plan-picker>
       <legend class="sr-only">Choose a plan</legend>
-      {plans.map((p) => <PlanCard plan={p} name="plan" selected={p.id === '6-months'} class={full ? 'opacity-60' : ''} />)}
+      {plans.map((p) => <PlanCard plan={p} name="plan" selected={p.id === '6-months'} />)}
     </fieldset>
   </section>
 
   {full ? (
     <section class="flex justify-center px-[var(--gutter)] pb-[72px] md:pb-[120px]"><NotifyCard /></section>
   ) : (
-    <section aria-labelledby="how-title" class="mx-auto flex max-w-[var(--container)] flex-col items-center gap-10 px-[var(--gutter)] pb-[72px] text-center md:pb-[120px]">
-      <div class="flex flex-col items-center gap-5">
+    <section aria-labelledby="how-title" class="mx-auto flex max-w-[var(--container)] flex-col gap-10 px-[var(--gutter)] pb-[72px] md:items-center md:pb-[120px] md:text-center">
+      <div class="flex flex-col gap-4 md:items-center md:gap-5">
         <h2 id="how-title" class="t-eyebrow">{m.howTitle}</h2>
-        <ol class="flex flex-wrap items-start justify-center gap-x-3 gap-y-4">
+        <ol class="flex flex-col items-start gap-3 md:flex-row md:flex-wrap md:justify-center md:gap-x-3 md:gap-y-4">
           {m.howSteps.map((s, i) => (
             <>
-              <li class="flex w-[72px] flex-col items-center gap-2.5 md:w-auto">
+              <li class="flex items-center gap-3 md:flex-col md:gap-2.5">
                 <span class="grid size-8 place-items-center rounded-full border border-ink bg-cream font-sans text-[14px] font-medium text-ink">{i + 1}</span>
                 <span class="font-sans text-[14px] leading-5 text-ink">{s}</span>
               </li>
@@ -85,7 +85,7 @@ const faqLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity
           ))}
         </ol>
       </div>
-      <div class="flex w-full flex-col items-center gap-4">
+      <div class="flex w-full flex-col gap-4 md:items-center">
         <Button href="/join?plan=6-months" class="max-md:w-full" data-join>{m.join.label}</Button>
         <p class="font-sans text-[14px] leading-5 text-muted italic">{m.joinNote}</p>
       </div>
@@ -94,12 +94,12 @@ const faqLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity
 
   <section aria-labelledby="faq-title" class="bg-sand px-[var(--gutter)] py-[72px] md:py-[120px]">
     <div class="mx-auto flex max-w-[var(--content)] flex-col gap-10 lg:flex-row lg:justify-between lg:gap-24">
-      <div class="flex flex-col gap-5 lg:w-[400px] lg:shrink-0">
+      <div class="max-lg:contents lg:flex lg:w-[400px] lg:shrink-0 lg:flex-col lg:gap-5">
         <div class="flex flex-col gap-2.5">
           <p class="t-eyebrow">{m.faqEyebrow}</p>
           <h2 id="faq-title" class="t-h2 text-ink">Renewal<br class="max-lg:hidden" /> &amp; cancellation.</h2>
         </div>
-        <p class="font-sans text-[18px] leading-[1.6] text-muted">Still wondering? Write to <a href="mailto:hello@hertablesociety.com" class="underline-offset-4 hover:underline">hello@hertablesociety.com</a></p>
+        <p class="font-sans text-[18px] leading-[1.6] text-muted max-lg:order-last">Still wondering? Write to <a href="mailto:hello@hertablesociety.com" class="underline-offset-4 hover:underline">hello@hertablesociety.com</a></p>
       </div>
       <div class="lg:max-w-[880px] lg:flex-1 [&>details:first-child]:border-t [&>details:first-child]:border-silver">
         {m.faq.map((f) => <FaqItem q={f.q} a={f.a} open={f.open} />)}

@@ -55,6 +55,7 @@ const list = await clientEvents();
     title="Rooftop Golden Hour"
     detail="Fri, Dec 5 · 6 to 9 PM · West Hollywood"
     image="optionEvents"
+    barLine="Rooftop Golden Hour · 2 tickets"
     lines={[{ label: 'Ticket × 2', value: '$XX', key: 'qty' }, { label: 'Member price', value: 'Not applied', key: 'member' }]}
     total="$XX"
     notes={['Your tickets and the exact address arrive by email. All guests must be 27+.']}
@@ -84,6 +85,7 @@ const list = await clientEvents();
     set('qty-label', `Ticket × ${qty}`);
     set('qty-value', total);
     set('total', total);
+    set('bar', `${ev.title} · ${qty} ticket${qty > 1 ? 's' : ''}`);
     const img = document.querySelector<HTMLImageElement>('[data-order-summary] img');
     if (img) { img.src = ev.thumb; img.removeAttribute('srcset'); }
     const payLabel = document.querySelector('[data-pay-label] span');

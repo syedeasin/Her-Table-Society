@@ -20,7 +20,7 @@ const { title, description, backHref, step, heading, intro } = Astro.props;
         )}
         <slot />
       </div>
-      <div class="w-full lg:sticky lg:top-8 lg:w-[440px] lg:shrink-0 min-[1600px]:w-[480px]"><slot name="aside" /></div>
+      <div class="w-full max-lg:order-first lg:sticky lg:top-8 lg:w-[440px] lg:shrink-0 min-[1600px]:w-[480px]"><slot name="aside" /></div>
     </div>
   </div>
 </BaseLayout>
